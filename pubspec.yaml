@@ -22,4 +22,4 @@ dev_dependencies:
 scripts:
   build: "dart run build_runner build --delete-conflicting-outputs"
   watch: "dart run build_runner watch"
-  push: "git add . && git commit -m 'openapi generated' && git push"
+  push: "git add . && git commit -m 'openapi generated' && git push -u origin main"
