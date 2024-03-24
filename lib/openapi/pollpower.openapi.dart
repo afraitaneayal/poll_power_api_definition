@@ -1403,8 +1403,8 @@ class PollpowerUrlResolve with OpenApiUrlEncodeMixin {
   }
 }
 
-class PollpowerRouter extends OpenApiServerRouterBase {
-  PollpowerRouter(this.impl);
+class PollPowerAPIRouter extends OpenApiServerRouterBase {
+  PollPowerAPIRouter(this.impl);
 
   final ApiEndpointProvider<PollPowerAPIContract> impl;
 
