@@ -80,7 +80,7 @@ class User implements OpenApiContent {
   String toString() => toJson().toString();
 }
 
-/// This is a definition for candidate in system
+/// This is a definition for candidate in system It's contain different data betwen candidate and user as a candidate is a user first
 @JsonSerializable()
 @ApiUuidJsonConverter()
 class Candidate implements OpenApiContent {
@@ -252,27 +252,6 @@ class JWTresponse implements OpenApiContent {
   String toString() => toJson().toString();
 }
 
-/// Web socket response to updated candidate vote count at user side
-@JsonSerializable()
-@ApiUuidJsonConverter()
-class WsResponse implements OpenApiContent {
-  WsResponse({this.candidateId});
-
-  factory WsResponse.fromJson(Map<String, dynamic> jsonMap) =>
-      _$WsResponseFromJson(jsonMap);
-
-  @JsonKey(
-    name: 'candidate_id',
-    includeIfNull: false,
-  )
-  final String? candidateId;
-
-  Map<String, dynamic> toJson() => _$WsResponseToJson(this);
-
-  @override
-  String toString() => toJson().toString();
-}
-
 ///
 @JsonSerializable()
 @ApiUuidJsonConverter()
@@ -372,19 +351,30 @@ sealed class GetBasePathResponse extends OpenApiResponse
   }
 }
 
-class LoginUserResponse200 extends LoginUserResponse {
+class LoginUserResponse200 extends LoginUserResponse
+    implements OpenApiResponseBodyJson {
   /// Login succesfuly trigger
-  LoginUserResponse200.response200() : status = 200;
+  LoginUserResponse200.response200(this.body)
+      : status = 200,
+        bodyJson = body.toJson();
 
   @override
   final int status;
 
+  final JWTresponse body;
+
   @override
-  final OpenApiContentType? contentType = null;
+  final Map<String, dynamic> bodyJson;
+
+  @override
+  final OpenApiContentType contentType =
+      OpenApiContentType.parse('application/json');
 
   @override
   Map<String, Object?> propertiesToString() => {
         'status': status,
+        'body': body,
+        'bodyJson': bodyJson,
         'contentType': contentType,
       };
 }
@@ -446,11 +436,12 @@ class LoginUserResponse500 extends LoginUserResponse
 }
 
 sealed class LoginUserResponse extends OpenApiResponse
-    implements HasSuccessResponse<void> {
+    implements HasSuccessResponse<JWTresponse> {
   LoginUserResponse();
 
   /// Login succesfuly trigger
-  factory LoginUserResponse.response200() => LoginUserResponse200.response200();
+  factory LoginUserResponse.response200(JWTresponse body) =>
+      LoginUserResponse200.response200(body);
 
   /// User send bad request like v1/auth/login with get methode
   factory LoginUserResponse.response400(Error body) =>
@@ -481,139 +472,9 @@ sealed class LoginUserResponse extends OpenApiResponse
 
   /// status 200:  Login succesfuly trigger
   @override
-  void requireSuccess() {
-    if (this is LoginUserResponse200) {
-      return;
-    } else {
-      throw StateError('Expected success response, but got $this');
-    }
-  }
-}
-
-class SignUpUserResponse201 extends SignUpUserResponse
-    implements OpenApiResponseBodyJson {
-  /// User successfuly created
-  SignUpUserResponse201.response201(this.body)
-      : status = 201,
-        bodyJson = body.toJson();
-
-  @override
-  final int status;
-
-  final JWTresponse body;
-
-  @override
-  final Map<String, dynamic> bodyJson;
-
-  @override
-  final OpenApiContentType contentType =
-      OpenApiContentType.parse('application/json');
-
-  @override
-  Map<String, Object?> propertiesToString() => {
-        'status': status,
-        'body': body,
-        'bodyJson': bodyJson,
-        'contentType': contentType,
-      };
-}
-
-class SignUpUserResponse400 extends SignUpUserResponse
-    implements OpenApiResponseBodyJson {
-  /// Bad request
-  SignUpUserResponse400.response400(this.body)
-      : status = 400,
-        bodyJson = body.toJson();
-
-  @override
-  final int status;
-
-  final Error body;
-
-  @override
-  final Map<String, dynamic> bodyJson;
-
-  @override
-  final OpenApiContentType contentType =
-      OpenApiContentType.parse('application/json');
-
-  @override
-  Map<String, Object?> propertiesToString() => {
-        'status': status,
-        'body': body,
-        'bodyJson': bodyJson,
-        'contentType': contentType,
-      };
-}
-
-class SignUpUserResponse500 extends SignUpUserResponse
-    implements OpenApiResponseBodyJson {
-  /// Internal server error
-  SignUpUserResponse500.response500(this.body)
-      : status = 500,
-        bodyJson = body.toJson();
-
-  @override
-  final int status;
-
-  final Error body;
-
-  @override
-  final Map<String, dynamic> bodyJson;
-
-  @override
-  final OpenApiContentType contentType =
-      OpenApiContentType.parse('application/json');
-
-  @override
-  Map<String, Object?> propertiesToString() => {
-        'status': status,
-        'body': body,
-        'bodyJson': bodyJson,
-        'contentType': contentType,
-      };
-}
-
-sealed class SignUpUserResponse extends OpenApiResponse
-    implements HasSuccessResponse<JWTresponse> {
-  SignUpUserResponse();
-
-  /// User successfuly created
-  factory SignUpUserResponse.response201(JWTresponse body) =>
-      SignUpUserResponse201.response201(body);
-
-  /// Bad request
-  factory SignUpUserResponse.response400(Error body) =>
-      SignUpUserResponse400.response400(body);
-
-  /// Internal server error
-  factory SignUpUserResponse.response500(Error body) =>
-      SignUpUserResponse500.response500(body);
-
-  R map<R>({
-    required ResponseMap<SignUpUserResponse201, R> on201,
-    required ResponseMap<SignUpUserResponse400, R> on400,
-    required ResponseMap<SignUpUserResponse500, R> on500,
-    ResponseMap<SignUpUserResponse, R>? onElse,
-  }) {
-    if (this is SignUpUserResponse201) {
-      return on201((this as SignUpUserResponse201));
-    } else if (this is SignUpUserResponse400) {
-      return on400((this as SignUpUserResponse400));
-    } else if (this is SignUpUserResponse500) {
-      return on500((this as SignUpUserResponse500));
-    } else if (onElse != null) {
-      return onElse(this);
-    } else {
-      throw StateError('Invalid instance of type $this');
-    }
-  }
-
-  /// status 201:  User successfuly created
-  @override
   JWTresponse requireSuccess() {
-    if (this is SignUpUserResponse201) {
-      return (this as SignUpUserResponse201).body;
+    if (this is LoginUserResponse200) {
+      return (this as LoginUserResponse200).body;
     } else {
       throw StateError('Expected success response, but got $this');
     }
@@ -974,17 +835,65 @@ sealed class VoteCandidateResponse extends OpenApiResponse
   }
 }
 
-class SubscribeResponse200 extends SubscribeResponse
+class SubscribeResponse200 extends SubscribeResponse {
+  /// WS connected
+  SubscribeResponse200.response200() : status = 200;
+
+  @override
+  final int status;
+
+  @override
+  final OpenApiContentType? contentType = null;
+
+  @override
+  Map<String, Object?> propertiesToString() => {
+        'status': status,
+        'contentType': contentType,
+      };
+}
+
+sealed class SubscribeResponse extends OpenApiResponse
+    implements HasSuccessResponse<void> {
+  SubscribeResponse();
+
+  /// WS connected
+  factory SubscribeResponse.response200() => SubscribeResponse200.response200();
+
+  R map<R>({
+    required ResponseMap<SubscribeResponse200, R> on200,
+    ResponseMap<SubscribeResponse, R>? onElse,
+  }) {
+    if (this is SubscribeResponse200) {
+      return on200((this as SubscribeResponse200));
+    } else if (onElse != null) {
+      return onElse(this);
+    } else {
+      throw StateError('Invalid instance of type $this');
+    }
+  }
+
+  /// status 200:  WS connected
+  @override
+  void requireSuccess() {
+    if (this is SubscribeResponse200) {
+      return;
+    } else {
+      throw StateError('Expected success response, but got $this');
+    }
+  }
+}
+
+class SignUpUserResponse201 extends SignUpUserResponse
     implements OpenApiResponseBodyJson {
-  /// Successfuly connected to web socket
-  SubscribeResponse200.response200(this.body)
-      : status = 200,
+  /// User successfuly created
+  SignUpUserResponse201.response201(this.body)
+      : status = 201,
         bodyJson = body.toJson();
 
   @override
   final int status;
 
-  final WsResponse body;
+  final User body;
 
   @override
   final Map<String, dynamic> bodyJson;
@@ -1002,20 +911,90 @@ class SubscribeResponse200 extends SubscribeResponse
       };
 }
 
-sealed class SubscribeResponse extends OpenApiResponse
-    implements HasSuccessResponse<WsResponse> {
-  SubscribeResponse();
+class SignUpUserResponse400 extends SignUpUserResponse
+    implements OpenApiResponseBodyJson {
+  /// Bad request
+  SignUpUserResponse400.response400(this.body)
+      : status = 400,
+        bodyJson = body.toJson();
 
-  /// Successfuly connected to web socket
-  factory SubscribeResponse.response200(WsResponse body) =>
-      SubscribeResponse200.response200(body);
+  @override
+  final int status;
+
+  final Error body;
+
+  @override
+  final Map<String, dynamic> bodyJson;
+
+  @override
+  final OpenApiContentType contentType =
+      OpenApiContentType.parse('application/json');
+
+  @override
+  Map<String, Object?> propertiesToString() => {
+        'status': status,
+        'body': body,
+        'bodyJson': bodyJson,
+        'contentType': contentType,
+      };
+}
+
+class SignUpUserResponse500 extends SignUpUserResponse
+    implements OpenApiResponseBodyJson {
+  /// Internal server error
+  SignUpUserResponse500.response500(this.body)
+      : status = 500,
+        bodyJson = body.toJson();
+
+  @override
+  final int status;
+
+  final Error body;
+
+  @override
+  final Map<String, dynamic> bodyJson;
+
+  @override
+  final OpenApiContentType contentType =
+      OpenApiContentType.parse('application/json');
+
+  @override
+  Map<String, Object?> propertiesToString() => {
+        'status': status,
+        'body': body,
+        'bodyJson': bodyJson,
+        'contentType': contentType,
+      };
+}
+
+sealed class SignUpUserResponse extends OpenApiResponse
+    implements HasSuccessResponse<User> {
+  SignUpUserResponse();
+
+  /// User successfuly created
+  factory SignUpUserResponse.response201(User body) =>
+      SignUpUserResponse201.response201(body);
+
+  /// Bad request
+  factory SignUpUserResponse.response400(Error body) =>
+      SignUpUserResponse400.response400(body);
+
+  /// Internal server error
+  factory SignUpUserResponse.response500(Error body) =>
+      SignUpUserResponse500.response500(body);
 
   R map<R>({
-    required ResponseMap<SubscribeResponse200, R> on200,
-    ResponseMap<SubscribeResponse, R>? onElse,
+    required ResponseMap<SignUpUserResponse201, R> on201,
+    required ResponseMap<SignUpUserResponse400, R> on400,
+    required ResponseMap<SignUpUserResponse500, R> on500,
+    ResponseMap<SignUpUserResponse, R>? onElse,
   }) {
-    if (this is SubscribeResponse200) {
-      return on200((this as SubscribeResponse200));
+    if (this is SignUpUserResponse201) {
+      return on201((this as SignUpUserResponse201));
+    } else if (this is SignUpUserResponse400) {
+      return on400((this as SignUpUserResponse400));
+    } else if (this is SignUpUserResponse500) {
+      return on500((this as SignUpUserResponse500));
     } else if (onElse != null) {
       return onElse(this);
     } else {
@@ -1023,11 +1002,141 @@ sealed class SubscribeResponse extends OpenApiResponse
     }
   }
 
-  /// status 200:  Successfuly connected to web socket
+  /// status 201:  User successfuly created
   @override
-  WsResponse requireSuccess() {
-    if (this is SubscribeResponse200) {
-      return (this as SubscribeResponse200).body;
+  User requireSuccess() {
+    if (this is SignUpUserResponse201) {
+      return (this as SignUpUserResponse201).body;
+    } else {
+      throw StateError('Expected success response, but got $this');
+    }
+  }
+}
+
+class SignUpCandidateResponse201 extends SignUpCandidateResponse
+    implements OpenApiResponseBodyJson {
+  /// User successfuly created
+  SignUpCandidateResponse201.response201(this.body)
+      : status = 201,
+        bodyJson = body.toJson();
+
+  @override
+  final int status;
+
+  final Candidate body;
+
+  @override
+  final Map<String, dynamic> bodyJson;
+
+  @override
+  final OpenApiContentType contentType =
+      OpenApiContentType.parse('application/json');
+
+  @override
+  Map<String, Object?> propertiesToString() => {
+        'status': status,
+        'body': body,
+        'bodyJson': bodyJson,
+        'contentType': contentType,
+      };
+}
+
+class SignUpCandidateResponse400 extends SignUpCandidateResponse
+    implements OpenApiResponseBodyJson {
+  /// Bad request
+  SignUpCandidateResponse400.response400(this.body)
+      : status = 400,
+        bodyJson = body.toJson();
+
+  @override
+  final int status;
+
+  final Error body;
+
+  @override
+  final Map<String, dynamic> bodyJson;
+
+  @override
+  final OpenApiContentType contentType =
+      OpenApiContentType.parse('application/json');
+
+  @override
+  Map<String, Object?> propertiesToString() => {
+        'status': status,
+        'body': body,
+        'bodyJson': bodyJson,
+        'contentType': contentType,
+      };
+}
+
+class SignUpCandidateResponse500 extends SignUpCandidateResponse
+    implements OpenApiResponseBodyJson {
+  /// Internal server error
+  SignUpCandidateResponse500.response500(this.body)
+      : status = 500,
+        bodyJson = body.toJson();
+
+  @override
+  final int status;
+
+  final Error body;
+
+  @override
+  final Map<String, dynamic> bodyJson;
+
+  @override
+  final OpenApiContentType contentType =
+      OpenApiContentType.parse('application/json');
+
+  @override
+  Map<String, Object?> propertiesToString() => {
+        'status': status,
+        'body': body,
+        'bodyJson': bodyJson,
+        'contentType': contentType,
+      };
+}
+
+sealed class SignUpCandidateResponse extends OpenApiResponse
+    implements HasSuccessResponse<Candidate> {
+  SignUpCandidateResponse();
+
+  /// User successfuly created
+  factory SignUpCandidateResponse.response201(Candidate body) =>
+      SignUpCandidateResponse201.response201(body);
+
+  /// Bad request
+  factory SignUpCandidateResponse.response400(Error body) =>
+      SignUpCandidateResponse400.response400(body);
+
+  /// Internal server error
+  factory SignUpCandidateResponse.response500(Error body) =>
+      SignUpCandidateResponse500.response500(body);
+
+  R map<R>({
+    required ResponseMap<SignUpCandidateResponse201, R> on201,
+    required ResponseMap<SignUpCandidateResponse400, R> on400,
+    required ResponseMap<SignUpCandidateResponse500, R> on500,
+    ResponseMap<SignUpCandidateResponse, R>? onElse,
+  }) {
+    if (this is SignUpCandidateResponse201) {
+      return on201((this as SignUpCandidateResponse201));
+    } else if (this is SignUpCandidateResponse400) {
+      return on400((this as SignUpCandidateResponse400));
+    } else if (this is SignUpCandidateResponse500) {
+      return on500((this as SignUpCandidateResponse500));
+    } else if (onElse != null) {
+      return onElse(this);
+    } else {
+      throw StateError('Invalid instance of type $this');
+    }
+  }
+
+  /// status 201:  User successfuly created
+  @override
+  Candidate requireSuccess() {
+    if (this is SignUpCandidateResponse201) {
+      return (this as SignUpCandidateResponse201).body;
     } else {
       throw StateError('Expected success response, but got $this');
     }
@@ -1044,11 +1153,6 @@ abstract class PollPowerAPIContract implements ApiEndpoint {
   /// [body]: Request to be send by user for loggin
   Future<LoginUserResponse> loginUser(UserLoginRequest body);
 
-  /// Post method to create new user
-  /// Post method to create new user and return their access
-  /// post: /v1/auth/signup
-  Future<SignUpUserResponse> signUpUser({required bool isCandidate});
-
   /// Get method
   /// get: /v1/candidates
   Future<GetCandidatesResponse> getCandidates();
@@ -1060,6 +1164,18 @@ abstract class PollPowerAPIContract implements ApiEndpoint {
 
   /// get: /v1/ws
   Future<SubscribeResponse> subscribe();
+
+  /// Post method to create new user
+  /// Post method to create new user and return their access
+  /// post: /v1/auth/signup/user
+  /// [body]: This is a definition of user in the system
+  Future<SignUpUserResponse> signUpUser(User body);
+
+  /// Post method to create new candidate
+  /// Post method to create new user and return their access
+  /// post: /v1/auth/signup/candidate
+  /// [body]: This is a definition for candidate in system It's contain different data betwen candidate and user as a candidate is a user first
+  Future<SignUpCandidateResponse> signUpCandidate(Candidate body);
 }
 
 abstract class PollPowerAPIClient implements OpenApiClient {
@@ -1067,7 +1183,7 @@ abstract class PollPowerAPIClient implements OpenApiClient {
     Uri baseUri,
     OpenApiRequestSender requestSender,
   ) =>
-      _PollowerClientImpl._(
+      _PollPowerAPIClientImpl._(
         baseUri,
         requestSender,
       );
@@ -1083,13 +1199,6 @@ abstract class PollPowerAPIClient implements OpenApiClient {
   /// [body]: Request to be send by user for loggin
   Future<LoginUserResponse> loginUser(UserLoginRequest body);
 
-  /// Post method to create new user
-  /// Post method to create new user and return their access
-  /// post: /v1/auth/signup
-  ///
-  /// * [isCandidate]: Tcheck if suser who want to sign is a candidate or not
-  Future<SignUpUserResponse> signUpUser({required bool isCandidate});
-
   /// Get method
   /// get: /v1/candidates
   ///
@@ -1104,11 +1213,25 @@ abstract class PollPowerAPIClient implements OpenApiClient {
   /// get: /v1/ws
   ///
   Future<SubscribeResponse> subscribe();
+
+  /// Post method to create new user
+  /// Post method to create new user and return their access
+  /// post: /v1/auth/signup/user
+  ///
+  /// [body]: This is a definition of user in the system
+  Future<SignUpUserResponse> signUpUser(User body);
+
+  /// Post method to create new candidate
+  /// Post method to create new user and return their access
+  /// post: /v1/auth/signup/candidate
+  ///
+  /// [body]: This is a definition for candidate in system It's contain different data betwen candidate and user as a candidate is a user first
+  Future<SignUpCandidateResponse> signUpCandidate(Candidate body);
 }
 
-class _PollowerClientImpl extends OpenApiClientBase
+class _PollPowerAPIClientImpl extends OpenApiClientBase
     implements PollPowerAPIClient {
-  _PollowerClientImpl._(
+  _PollPowerAPIClientImpl._(
     this.baseUri,
     this.requestSender,
   );
@@ -1148,14 +1271,7 @@ class _PollowerClientImpl extends OpenApiClientBase
     final request = OpenApiClientRequest(
       'post',
       '/v1/auth/login',
-      [
-        SecurityRequirement(schemes: [
-          SecurityRequirementScheme(
-            scheme: SecuritySchemes.jwt,
-            scopes: [],
-          )
-        ])
-      ],
+      [],
     );
     request.setHeader(
       'content-type',
@@ -1166,44 +1282,13 @@ class _PollowerClientImpl extends OpenApiClientBase
       request,
       {
         '200': (OpenApiClientResponse response) async =>
-            LoginUserResponse200.response200(),
+            LoginUserResponse200.response200(
+                JWTresponse.fromJson(await response.responseBodyJson())),
         '400': (OpenApiClientResponse response) async =>
             LoginUserResponse400.response400(
                 Error.fromJson(await response.responseBodyJson())),
         '500': (OpenApiClientResponse response) async =>
             LoginUserResponse500.response500(
-                Error.fromJson(await response.responseBodyJson())),
-      },
-    );
-  }
-
-  /// Post method to create new user
-  /// Post method to create new user and return their access
-  /// post: /v1/auth/signup
-  ///
-  /// * [isCandidate]: Tcheck if suser who want to sign is a candidate or not
-  @override
-  Future<SignUpUserResponse> signUpUser({required bool isCandidate}) async {
-    final request = OpenApiClientRequest(
-      'post',
-      '/v1/auth/signup',
-      [],
-    );
-    request.addQueryParameter(
-      'isCandidate',
-      encodeBool(isCandidate),
-    );
-    return await sendRequest(
-      request,
-      {
-        '201': (OpenApiClientResponse response) async =>
-            SignUpUserResponse201.response201(
-                JWTresponse.fromJson(await response.responseBodyJson())),
-        '400': (OpenApiClientResponse response) async =>
-            SignUpUserResponse400.response400(
-                Error.fromJson(await response.responseBodyJson())),
-        '500': (OpenApiClientResponse response) async =>
-            SignUpUserResponse500.response500(
                 Error.fromJson(await response.responseBodyJson())),
       },
     );
@@ -1304,14 +1389,79 @@ class _PollowerClientImpl extends OpenApiClientBase
       request,
       {
         '200': (OpenApiClientResponse response) async =>
-            SubscribeResponse200.response200(
-                WsResponse.fromJson(await response.responseBodyJson()))
+            SubscribeResponse200.response200()
+      },
+    );
+  }
+
+  /// Post method to create new user
+  /// Post method to create new user and return their access
+  /// post: /v1/auth/signup/user
+  ///
+  /// [body]: This is a definition of user in the system
+  @override
+  Future<SignUpUserResponse> signUpUser(User body) async {
+    final request = OpenApiClientRequest(
+      'post',
+      '/v1/auth/signup/user',
+      [],
+    );
+    request.setHeader(
+      'content-type',
+      'application/json',
+    );
+    request.setBody(OpenApiClientRequestBodyJson(body.toJson()));
+    return await sendRequest(
+      request,
+      {
+        '201': (OpenApiClientResponse response) async =>
+            SignUpUserResponse201.response201(
+                User.fromJson(await response.responseBodyJson())),
+        '400': (OpenApiClientResponse response) async =>
+            SignUpUserResponse400.response400(
+                Error.fromJson(await response.responseBodyJson())),
+        '500': (OpenApiClientResponse response) async =>
+            SignUpUserResponse500.response500(
+                Error.fromJson(await response.responseBodyJson())),
+      },
+    );
+  }
+
+  /// Post method to create new candidate
+  /// Post method to create new user and return their access
+  /// post: /v1/auth/signup/candidate
+  ///
+  /// [body]: This is a definition for candidate in system It's contain different data betwen candidate and user as a candidate is a user first
+  @override
+  Future<SignUpCandidateResponse> signUpCandidate(Candidate body) async {
+    final request = OpenApiClientRequest(
+      'post',
+      '/v1/auth/signup/candidate',
+      [],
+    );
+    request.setHeader(
+      'content-type',
+      'application/json',
+    );
+    request.setBody(OpenApiClientRequestBodyJson(body.toJson()));
+    return await sendRequest(
+      request,
+      {
+        '201': (OpenApiClientResponse response) async =>
+            SignUpCandidateResponse201.response201(
+                Candidate.fromJson(await response.responseBodyJson())),
+        '400': (OpenApiClientResponse response) async =>
+            SignUpCandidateResponse400.response400(
+                Error.fromJson(await response.responseBodyJson())),
+        '500': (OpenApiClientResponse response) async =>
+            SignUpCandidateResponse500.response500(
+                Error.fromJson(await response.responseBodyJson())),
       },
     );
   }
 }
 
-class PollPowerUrlResolve with OpenApiUrlEncodeMixin {
+class PollPowerAPIUrlResolve with OpenApiUrlEncodeMixin {
   /// get: /v1/
   ///
   OpenApiClientRequest getBasePath() {
@@ -1331,32 +1481,7 @@ class PollPowerUrlResolve with OpenApiUrlEncodeMixin {
     final request = OpenApiClientRequest(
       'post',
       '/v1/auth/login',
-      [
-        SecurityRequirement(schemes: [
-          SecurityRequirementScheme(
-            scheme: SecuritySchemes.jwt,
-            scopes: [],
-          )
-        ])
-      ],
-    );
-    return request;
-  }
-
-  /// Post method to create new user
-  /// Post method to create new user and return their access
-  /// post: /v1/auth/signup
-  ///
-  /// * [isCandidate]: Tcheck if suser who want to sign is a candidate or not
-  OpenApiClientRequest signUpUser({required bool isCandidate}) {
-    final request = OpenApiClientRequest(
-      'post',
-      '/v1/auth/signup',
       [],
-    );
-    request.addQueryParameter(
-      'isCandidate',
-      encodeBool(isCandidate),
     );
     return request;
   }
@@ -1409,6 +1534,32 @@ class PollPowerUrlResolve with OpenApiUrlEncodeMixin {
     );
     return request;
   }
+
+  /// Post method to create new user
+  /// Post method to create new user and return their access
+  /// post: /v1/auth/signup/user
+  ///
+  OpenApiClientRequest signUpUser() {
+    final request = OpenApiClientRequest(
+      'post',
+      '/v1/auth/signup/user',
+      [],
+    );
+    return request;
+  }
+
+  /// Post method to create new candidate
+  /// Post method to create new user and return their access
+  /// post: /v1/auth/signup/candidate
+  ///
+  OpenApiClientRequest signUpCandidate() {
+    final request = OpenApiClientRequest(
+      'post',
+      '/v1/auth/signup/candidate',
+      [],
+    );
+    return request;
+  }
 }
 
 class PollPowerAPIRouter extends OpenApiServerRouterBase {
@@ -1437,29 +1588,6 @@ class PollPowerAPIRouter extends OpenApiServerRouterBase {
           request,
           (PollPowerAPIContract impl) async => impl.loginUser(
               UserLoginRequest.fromJson(await request.readJsonBody())),
-        );
-      },
-      security: [
-        SecurityRequirement(schemes: [
-          SecurityRequirementScheme(
-            scheme: SecuritySchemes.jwt,
-            scopes: [],
-          )
-        ])
-      ],
-    );
-    addRoute(
-      '/v1/auth/signup',
-      'post',
-      (OpenApiRequest request) async {
-        return await impl.invoke(
-          request,
-          (PollPowerAPIContract impl) async => impl.signUpUser(
-              isCandidate: paramRequired(
-            name: 'isCandidate',
-            value: request.queryParameter('isCandidate'),
-            decode: (value) => paramToBool(value),
-          )),
         );
       },
       security: [],
@@ -1508,6 +1636,30 @@ class PollPowerAPIRouter extends OpenApiServerRouterBase {
         return await impl.invoke(
           request,
           (PollPowerAPIContract impl) async => impl.subscribe(),
+        );
+      },
+      security: [],
+    );
+    addRoute(
+      '/v1/auth/signup/user',
+      'post',
+      (OpenApiRequest request) async {
+        return await impl.invoke(
+          request,
+          (PollPowerAPIContract impl) async =>
+              impl.signUpUser(User.fromJson(await request.readJsonBody())),
+        );
+      },
+      security: [],
+    );
+    addRoute(
+      '/v1/auth/signup/candidate',
+      'post',
+      (OpenApiRequest request) async {
+        return await impl.invoke(
+          request,
+          (PollPowerAPIContract impl) async => impl.signUpCandidate(
+              Candidate.fromJson(await request.readJsonBody())),
         );
       },
       security: [],

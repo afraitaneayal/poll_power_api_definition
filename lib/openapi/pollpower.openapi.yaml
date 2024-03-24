@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
     title: poll_power
-    version: '1.3'
+    version: '1.4'
     description: >-
         This is a little school project, a voting app allowing users to choose their preferred candidate and
         see real-time results.
@@ -41,6 +41,10 @@ paths:
                 required: true
             responses:
                 '200':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/JWTresponse'
                     description: Login succesfuly trigger
                 '400':
                     content:
@@ -54,44 +58,9 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/Error'
                     description: Internal server error
-            security:
-                -
-                    JWT: []
             operationId: LoginUser
             summary: Post methode for loggin
             description: Post methode that allow user to send thier info and get their credentials
-    /v1/auth/signup:
-        post:
-            responses:
-                '201':
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/JWTresponse'
-                    description: User successfuly created
-                '400':
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Error'
-                    description: Bad request
-                '500':
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Error'
-                    description: Internal server error
-            operationId: SignUpUser
-            summary: Post method to create new user
-            description: Post method to create new user and return their access
-        parameters:
-            -
-                name: isCandidate
-                description: Tcheck if suser who want to sign is a candidate or not
-                schema:
-                    type: boolean
-                in: query
-                required: true
     /v1/candidates:
         description: This path allow getting all available candidates
         get:
@@ -173,12 +142,70 @@ paths:
         get:
             responses:
                 '200':
+                    description: WS connected
+            operationId: Subscribe
+    /v1/auth/signup/user:
+        post:
+            requestBody:
+                description: Request to create new user
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/User'
+                required: true
+            responses:
+                '201':
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/WsResponse'
-                    description: Successfuly connected to web socket
-            operationId: Subscribe
+                                $ref: '#/components/schemas/User'
+                    description: User successfuly created
+                '400':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                    description: Bad request
+                '500':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                    description: Internal server error
+            operationId: SignUpUser
+            summary: Post method to create new user
+            description: Post method to create new user and return their access
+    /v1/auth/signup/candidate:
+        post:
+            requestBody:
+                description: Request to signup new candidate
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Candidate'
+                required: true
+            responses:
+                '201':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Candidate'
+                    description: User successfuly created
+                '400':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                    description: Bad request
+                '500':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                    description: Internal server error
+            operationId: SignUpCandidate
+            summary: Post method to create new candidate
+            description: Post method to create new user and return their access
 components:
     schemas:
         User:
@@ -222,7 +249,7 @@ components:
         Candidate:
             title: Root Type for Candidate
             description: |-
-                This is a definition for candidate in system
+                This is a definition for candidate in system It's contain different data betwen candidate and user as a candidate is a user first
             required:
                 - slogan
                 - vote_count
@@ -293,15 +320,6 @@ components:
             example:
                 token: ''
                 refresh_token: ''
-        WsResponse:
-            title: Root Type for WsResponse
-            description: Web socket response to updated candidate vote count at user side
-            type: object
-            properties:
-                candidate_id:
-                    type: string
-            example:
-                candidate_id: ''
         VotingRequest:
             title: Root Type for VotingRequest
             description: ''

@@ -135,23 +135,6 @@ Map<String, dynamic> _$JWTresponseToJson(JWTresponse instance) =>
       'key': instance.key,
     };
 
-WsResponse _$WsResponseFromJson(Map<String, dynamic> json) => WsResponse(
-      candidateId: json['candidate_id'] as String?,
-    );
-
-Map<String, dynamic> _$WsResponseToJson(WsResponse instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('candidate_id', instance.candidateId);
-  return val;
-}
-
 VotingRequest _$VotingRequestFromJson(Map<String, dynamic> json) =>
     VotingRequest(
       candidateId: json['candidate_id'] as String?,
