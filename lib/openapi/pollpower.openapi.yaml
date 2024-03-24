@@ -1,0 +1,317 @@
+openapi: 3.0.2
+info:
+    title: poll_power
+    version: '1.2'
+    description: >-
+        This is a little school project, a voting app allowing users to choose their preferred candidate and
+        see real-time results.
+    contact:
+        name: Yaya HC
+        url: 'https://github.com/yayahc'
+        email: Hamedcuenca5@gmail.com
+    license:
+        name: MIT License
+        url: 'https://opensource.org/licenses/MIT'
+servers:
+    -
+        url: 'http://localhost:8080'
+        description: ''
+paths:
+    /v1/auth/login:
+        summary: Login path
+        description: Login path for both user and candidate
+        post:
+            requestBody:
+                description: Informations user should send first
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UserLoginRequest'
+                required: true
+            responses:
+                '200':
+                    description: Login succesfuly trigger
+                '400':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                    description: User send bad request like v1/auth/login with get methode
+                '500':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                    description: Internal server error
+            security:
+                -
+                    JWT: []
+            operationId: LoginUser
+            summary: Post methode for loggin
+            description: Post methode that allow user to send thier info and get their credentials
+    /v1/auth/signup:
+        post:
+            responses:
+                '201':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/JWTresponse'
+                    description: User successfuly created
+                '400':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                    description: Bad request
+                '500':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                    description: Internal server error
+            operationId: SignUpUser
+            summary: Post method to create new user
+            description: Post method to create new user and return their access
+        parameters:
+            -
+                name: isCandidate
+                description: Tcheck if suser who want to sign is a candidate or not
+                schema:
+                    type: boolean
+                in: query
+                required: true
+    /v1/candidates:
+        description: This path allow getting all available candidates
+        get:
+            responses:
+                '200':
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/User'
+                    description: Successfuly got candidates
+                '400':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                    description: Bad request
+                '401':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                    description: Unauthorized user
+                '500':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                    description: Internal server error
+            security:
+                -
+                    JWT: []
+            operationId: GetCandidates
+            summary: Get method
+    /v1/ws:
+        get:
+            responses:
+                '200':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/WsResponse'
+                    description: Successfuly connected to web socket
+            operationId: Subscribe
+    /v1/votes:
+        summary: Path to vote a candidate
+        post:
+            requestBody:
+                description: Voting request to be send by user
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/VotingRequest'
+                required: true
+            responses:
+                '200':
+                    description: Successfuly voted
+                '400':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                    description: Bad request
+                '401':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                    description: Unauthorized user
+                '404':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                    description: Candidate not found
+                '500':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                    description: Internal server error
+            security:
+                -
+                    JWT: []
+            operationId: VoteCandidate
+            summary: Post methot for voting
+components:
+    schemas:
+        User:
+            title: Root Type for User
+            description: This is a definition of user in the system
+            required:
+                - area_of_study
+                - email
+                - first_name
+                - grade
+                - last_name
+                - password
+                - id
+            type: object
+            properties:
+                email:
+                    type: string
+                password:
+                    type: string
+                first_name:
+                    type: string
+                last_name:
+                    type: string
+                grade:
+                    type: string
+                area_of_study:
+                    type: string
+                image:
+                    type: string
+                candidate:
+                    $ref: '#/components/schemas/Candidate'
+                    description: ''
+                id:
+                    description: ''
+                    type: string
+            example:
+                email: ''
+                password: ''
+                first_name: ''
+                last_name: ''
+                grade: ''
+                area_of_study: ''
+                image: ''
+        Candidate:
+            title: Root Type for Candidate
+            description: |-
+                This is a definition for candidate in system
+                It's contain different data betwen candidate and user as a candidate is a user first
+            required:
+                - slogan
+                - vote_count
+                - id
+            type: object
+            properties:
+                slogan:
+                    type: string
+                speech:
+                    type: string
+                vote_count:
+                    description: Candidate vote count
+                    type: integer
+                id:
+                    description: ''
+                    type: string
+            example:
+                slogan: ''
+                speech: ''
+        UserLoginRequest:
+            title: Root Type for UserLoginRequest
+            description: Request to be send by user for loggin
+            type: object
+            properties:
+                email:
+                    type: string
+                password:
+                    type: string
+            example:
+                email: ''
+                password: ''
+        Error:
+            title: Root Type for Error
+            description: 'Base error response '
+            type: object
+            properties:
+                error:
+                    type: object
+                    properties:
+                        devMessage:
+                            type: string
+                        userFriendlyMessage:
+                            type: string
+            example:
+                error:
+                    devMessage: ''
+                    userFriendlyMessage: ''
+        JWTresponse:
+            title: Root Type for JWTresponse
+            description: JWT response that contain token and refresh token
+            required:
+                - refresh_token
+                - token
+                - key
+            type: object
+            properties:
+                token:
+                    type: string
+                refresh_token:
+                    type: string
+                key:
+                    description: Kay that will be use by server to ensure that sender is allow
+                    type: string
+            example:
+                token: ''
+                refresh_token: ''
+        WsResponse:
+            title: Root Type for WsResponse
+            description: Web socket response to updated candidate vote count at user side
+            type: object
+            properties:
+                candidate_id:
+                    type: string
+            example:
+                candidate_id: ''
+        VotingRequest:
+            title: Root Type for VotingRequest
+            description: ''
+            type: object
+            properties:
+                candidate_id:
+                    type: string
+                voted_at:
+                    type: string
+                user_id:
+                    type: string
+            example:
+                candidate_id: ''
+                voted_at: ''
+                user_id: ''
+    securitySchemes:
+        JWT:
+            scheme: bearer
+            type: http
+            description: Json Web Token base security
+tags:
+    -
+        name: v1
+        description: First version of the specification
