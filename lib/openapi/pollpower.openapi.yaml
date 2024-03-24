@@ -127,16 +127,6 @@ paths:
                     JWT: []
             operationId: GetCandidates
             summary: Get method
-    /v1/ws:
-        get:
-            responses:
-                '200':
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/WsResponse'
-                    description: Successfuly connected to web socket
-            operationId: Subscribe
     /v1/votes:
         summary: Path to vote a candidate
         post:
@@ -179,6 +169,16 @@ paths:
                     JWT: []
             operationId: VoteCandidate
             summary: Post methot for voting
+    /v1/ws:
+        get:
+            responses:
+                '200':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/WsResponse'
+                    description: Successfuly connected to web socket
+            operationId: Subscribe
 components:
     schemas:
         User:
@@ -208,9 +208,6 @@ components:
                     type: string
                 image:
                     type: string
-                candidate:
-                    $ref: '#/components/schemas/Candidate'
-                    description: ''
                 id:
                     description: ''
                     type: string
@@ -226,11 +223,11 @@ components:
             title: Root Type for Candidate
             description: |-
                 This is a definition for candidate in system
-                It's contain different data betwen candidate and user as a candidate is a user first
             required:
                 - slogan
                 - vote_count
                 - id
+                - user
             type: object
             properties:
                 slogan:
@@ -243,6 +240,9 @@ components:
                 id:
                     description: ''
                     type: string
+                user:
+                    $ref: '#/components/schemas/User'
+                    description: ''
             example:
                 slogan: ''
                 speech: ''
@@ -305,6 +305,8 @@ components:
         VotingRequest:
             title: Root Type for VotingRequest
             description: ''
+            required:
+                - id
             type: object
             properties:
                 candidate_id:
@@ -312,6 +314,9 @@ components:
                 voted_at:
                     type: string
                 user_id:
+                    type: string
+                id:
+                    description: ''
                     type: string
             example:
                 candidate_id: ''

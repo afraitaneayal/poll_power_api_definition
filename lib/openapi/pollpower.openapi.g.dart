@@ -6,30 +6,6 @@ part of 'pollpower.openapi.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Candidate _$CandidateFromJson(Map<String, dynamic> json) => Candidate(
-      slogan: json['slogan'] as String,
-      speech: json['speech'] as String?,
-      voteCount: json['vote_count'] as int,
-      id: json['id'] as String,
-    );
-
-Map<String, dynamic> _$CandidateToJson(Candidate instance) {
-  final val = <String, dynamic>{
-    'slogan': instance.slogan,
-  };
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('speech', instance.speech);
-  val['vote_count'] = instance.voteCount;
-  val['id'] = instance.id;
-  return val;
-}
-
 User _$UserFromJson(Map<String, dynamic> json) => User(
       email: json['email'] as String,
       password: json['password'] as String,
@@ -38,9 +14,6 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       grade: json['grade'] as String,
       areaOfStudy: json['area_of_study'] as String,
       image: json['image'] as String?,
-      candidate: json['candidate'] == null
-          ? null
-          : Candidate.fromJson(json['candidate'] as Map<String, dynamic>),
       id: json['id'] as String,
     );
 
@@ -61,8 +34,33 @@ Map<String, dynamic> _$UserToJson(User instance) {
   }
 
   writeNotNull('image', instance.image);
-  writeNotNull('candidate', instance.candidate);
   val['id'] = instance.id;
+  return val;
+}
+
+Candidate _$CandidateFromJson(Map<String, dynamic> json) => Candidate(
+      slogan: json['slogan'] as String,
+      speech: json['speech'] as String?,
+      voteCount: json['vote_count'] as int,
+      id: json['id'] as String,
+      user: User.fromJson(json['user'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$CandidateToJson(Candidate instance) {
+  final val = <String, dynamic>{
+    'slogan': instance.slogan,
+  };
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('speech', instance.speech);
+  val['vote_count'] = instance.voteCount;
+  val['id'] = instance.id;
+  val['user'] = instance.user;
   return val;
 }
 
@@ -159,6 +157,7 @@ VotingRequest _$VotingRequestFromJson(Map<String, dynamic> json) =>
       candidateId: json['candidate_id'] as String?,
       votedAt: json['voted_at'] as String?,
       userId: json['user_id'] as String?,
+      id: json['id'] as String,
     );
 
 Map<String, dynamic> _$VotingRequestToJson(VotingRequest instance) {
@@ -173,5 +172,6 @@ Map<String, dynamic> _$VotingRequestToJson(VotingRequest instance) {
   writeNotNull('candidate_id', instance.candidateId);
   writeNotNull('voted_at', instance.votedAt);
   writeNotNull('user_id', instance.userId);
+  val['id'] = instance.id;
   return val;
 }

@@ -7,52 +7,6 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:openapi_base/openapi_base.dart';
 part 'pollpower.openapi.g.dart';
 
-///
-@JsonSerializable()
-@ApiUuidJsonConverter()
-class Candidate implements OpenApiContent {
-  Candidate({
-    required this.slogan,
-    this.speech,
-    required this.voteCount,
-    required this.id,
-  });
-
-  factory Candidate.fromJson(Map<String, dynamic> jsonMap) =>
-      _$CandidateFromJson(jsonMap);
-
-  @JsonKey(
-    name: 'slogan',
-    includeIfNull: false,
-  )
-  final String slogan;
-
-  @JsonKey(
-    name: 'speech',
-    includeIfNull: false,
-  )
-  final String? speech;
-
-  /// Candidate vote count
-  @JsonKey(
-    name: 'vote_count',
-    includeIfNull: false,
-  )
-  final int voteCount;
-
-  ///
-  @JsonKey(
-    name: 'id',
-    includeIfNull: false,
-  )
-  final String id;
-
-  Map<String, dynamic> toJson() => _$CandidateToJson(this);
-
-  @override
-  String toString() => toJson().toString();
-}
-
 /// This is a definition of user in the system
 @JsonSerializable()
 @ApiUuidJsonConverter()
@@ -65,7 +19,6 @@ class User implements OpenApiContent {
     required this.grade,
     required this.areaOfStudy,
     this.image,
-    this.candidate,
     required this.id,
   });
 
@@ -116,10 +69,50 @@ class User implements OpenApiContent {
 
   ///
   @JsonKey(
-    name: 'candidate',
+    name: 'id',
     includeIfNull: false,
   )
-  final Candidate? candidate;
+  final String id;
+
+  Map<String, dynamic> toJson() => _$UserToJson(this);
+
+  @override
+  String toString() => toJson().toString();
+}
+
+/// This is a definition for candidate in system
+@JsonSerializable()
+@ApiUuidJsonConverter()
+class Candidate implements OpenApiContent {
+  Candidate({
+    required this.slogan,
+    this.speech,
+    required this.voteCount,
+    required this.id,
+    required this.user,
+  });
+
+  factory Candidate.fromJson(Map<String, dynamic> jsonMap) =>
+      _$CandidateFromJson(jsonMap);
+
+  @JsonKey(
+    name: 'slogan',
+    includeIfNull: false,
+  )
+  final String slogan;
+
+  @JsonKey(
+    name: 'speech',
+    includeIfNull: false,
+  )
+  final String? speech;
+
+  /// Candidate vote count
+  @JsonKey(
+    name: 'vote_count',
+    includeIfNull: false,
+  )
+  final int voteCount;
 
   ///
   @JsonKey(
@@ -128,7 +121,14 @@ class User implements OpenApiContent {
   )
   final String id;
 
-  Map<String, dynamic> toJson() => _$UserToJson(this);
+  ///
+  @JsonKey(
+    name: 'user',
+    includeIfNull: false,
+  )
+  final User user;
+
+  Map<String, dynamic> toJson() => _$CandidateToJson(this);
 
   @override
   String toString() => toJson().toString();
@@ -281,6 +281,7 @@ class VotingRequest implements OpenApiContent {
     this.candidateId,
     this.votedAt,
     this.userId,
+    required this.id,
   });
 
   factory VotingRequest.fromJson(Map<String, dynamic> jsonMap) =>
@@ -303,6 +304,13 @@ class VotingRequest implements OpenApiContent {
     includeIfNull: false,
   )
   final String? userId;
+
+  ///
+  @JsonKey(
+    name: 'id',
+    includeIfNull: false,
+  )
+  final String id;
 
   Map<String, dynamic> toJson() => _$VotingRequestToJson(this);
 
@@ -777,66 +785,6 @@ sealed class GetCandidatesResponse extends OpenApiResponse
   }
 }
 
-class SubscribeResponse200 extends SubscribeResponse
-    implements OpenApiResponseBodyJson {
-  /// Successfuly connected to web socket
-  SubscribeResponse200.response200(this.body)
-      : status = 200,
-        bodyJson = body.toJson();
-
-  @override
-  final int status;
-
-  final WsResponse body;
-
-  @override
-  final Map<String, dynamic> bodyJson;
-
-  @override
-  final OpenApiContentType contentType =
-      OpenApiContentType.parse('application/json');
-
-  @override
-  Map<String, Object?> propertiesToString() => {
-        'status': status,
-        'body': body,
-        'bodyJson': bodyJson,
-        'contentType': contentType,
-      };
-}
-
-sealed class SubscribeResponse extends OpenApiResponse
-    implements HasSuccessResponse<WsResponse> {
-  SubscribeResponse();
-
-  /// Successfuly connected to web socket
-  factory SubscribeResponse.response200(WsResponse body) =>
-      SubscribeResponse200.response200(body);
-
-  R map<R>({
-    required ResponseMap<SubscribeResponse200, R> on200,
-    ResponseMap<SubscribeResponse, R>? onElse,
-  }) {
-    if (this is SubscribeResponse200) {
-      return on200((this as SubscribeResponse200));
-    } else if (onElse != null) {
-      return onElse(this);
-    } else {
-      throw StateError('Invalid instance of type $this');
-    }
-  }
-
-  /// status 200:  Successfuly connected to web socket
-  @override
-  WsResponse requireSuccess() {
-    if (this is SubscribeResponse200) {
-      return (this as SubscribeResponse200).body;
-    } else {
-      throw StateError('Expected success response, but got $this');
-    }
-  }
-}
-
 class VoteCandidateResponse200 extends VoteCandidateResponse {
   /// Successfuly voted
   VoteCandidateResponse200.response200() : status = 200;
@@ -1026,6 +974,66 @@ sealed class VoteCandidateResponse extends OpenApiResponse
   }
 }
 
+class SubscribeResponse200 extends SubscribeResponse
+    implements OpenApiResponseBodyJson {
+  /// Successfuly connected to web socket
+  SubscribeResponse200.response200(this.body)
+      : status = 200,
+        bodyJson = body.toJson();
+
+  @override
+  final int status;
+
+  final WsResponse body;
+
+  @override
+  final Map<String, dynamic> bodyJson;
+
+  @override
+  final OpenApiContentType contentType =
+      OpenApiContentType.parse('application/json');
+
+  @override
+  Map<String, Object?> propertiesToString() => {
+        'status': status,
+        'body': body,
+        'bodyJson': bodyJson,
+        'contentType': contentType,
+      };
+}
+
+sealed class SubscribeResponse extends OpenApiResponse
+    implements HasSuccessResponse<WsResponse> {
+  SubscribeResponse();
+
+  /// Successfuly connected to web socket
+  factory SubscribeResponse.response200(WsResponse body) =>
+      SubscribeResponse200.response200(body);
+
+  R map<R>({
+    required ResponseMap<SubscribeResponse200, R> on200,
+    ResponseMap<SubscribeResponse, R>? onElse,
+  }) {
+    if (this is SubscribeResponse200) {
+      return on200((this as SubscribeResponse200));
+    } else if (onElse != null) {
+      return onElse(this);
+    } else {
+      throw StateError('Invalid instance of type $this');
+    }
+  }
+
+  /// status 200:  Successfuly connected to web socket
+  @override
+  WsResponse requireSuccess() {
+    if (this is SubscribeResponse200) {
+      return (this as SubscribeResponse200).body;
+    } else {
+      throw StateError('Expected success response, but got $this');
+    }
+  }
+}
+
 abstract class PollPowerAPIContract implements ApiEndpoint {
   /// get: /v1/
   Future<GetBasePathResponse> getBasePath();
@@ -1045,13 +1053,13 @@ abstract class PollPowerAPIContract implements ApiEndpoint {
   /// get: /v1/candidates
   Future<GetCandidatesResponse> getCandidates();
 
-  /// get: /v1/ws
-  Future<SubscribeResponse> subscribe();
-
   /// Post methot for voting
   /// post: /v1/votes
   /// [body]:
   Future<VoteCandidateResponse> voteCandidate(VotingRequest body);
+
+  /// get: /v1/ws
+  Future<SubscribeResponse> subscribe();
 }
 
 abstract class PollPowerAPIClient implements OpenApiClient {
@@ -1059,7 +1067,7 @@ abstract class PollPowerAPIClient implements OpenApiClient {
     Uri baseUri,
     OpenApiRequestSender requestSender,
   ) =>
-      _PollPowerAPIClientImpl._(
+      _PollowerClientImpl._(
         baseUri,
         requestSender,
       );
@@ -1087,20 +1095,20 @@ abstract class PollPowerAPIClient implements OpenApiClient {
   ///
   Future<GetCandidatesResponse> getCandidates();
 
-  /// get: /v1/ws
-  ///
-  Future<SubscribeResponse> subscribe();
-
   /// Post methot for voting
   /// post: /v1/votes
   ///
   /// [body]:
   Future<VoteCandidateResponse> voteCandidate(VotingRequest body);
+
+  /// get: /v1/ws
+  ///
+  Future<SubscribeResponse> subscribe();
 }
 
-class _PollPowerAPIClientImpl extends OpenApiClientBase
+class _PollowerClientImpl extends OpenApiClientBase
     implements PollPowerAPIClient {
-  _PollPowerAPIClientImpl._(
+  _PollowerClientImpl._(
     this.baseUri,
     this.requestSender,
   );
@@ -1239,25 +1247,6 @@ class _PollPowerAPIClientImpl extends OpenApiClientBase
     );
   }
 
-  /// get: /v1/ws
-  ///
-  @override
-  Future<SubscribeResponse> subscribe() async {
-    final request = OpenApiClientRequest(
-      'get',
-      '/v1/ws',
-      [],
-    );
-    return await sendRequest(
-      request,
-      {
-        '200': (OpenApiClientResponse response) async =>
-            SubscribeResponse200.response200(
-                WsResponse.fromJson(await response.responseBodyJson()))
-      },
-    );
-  }
-
   /// Post methot for voting
   /// post: /v1/votes
   ///
@@ -1301,9 +1290,28 @@ class _PollPowerAPIClientImpl extends OpenApiClientBase
       },
     );
   }
+
+  /// get: /v1/ws
+  ///
+  @override
+  Future<SubscribeResponse> subscribe() async {
+    final request = OpenApiClientRequest(
+      'get',
+      '/v1/ws',
+      [],
+    );
+    return await sendRequest(
+      request,
+      {
+        '200': (OpenApiClientResponse response) async =>
+            SubscribeResponse200.response200(
+                WsResponse.fromJson(await response.responseBodyJson()))
+      },
+    );
+  }
 }
 
-class PollpowerUrlResolve with OpenApiUrlEncodeMixin {
+class PollPowerUrlResolve with OpenApiUrlEncodeMixin {
   /// get: /v1/
   ///
   OpenApiClientRequest getBasePath() {
@@ -1372,17 +1380,6 @@ class PollpowerUrlResolve with OpenApiUrlEncodeMixin {
     return request;
   }
 
-  /// get: /v1/ws
-  ///
-  OpenApiClientRequest subscribe() {
-    final request = OpenApiClientRequest(
-      'get',
-      '/v1/ws',
-      [],
-    );
-    return request;
-  }
-
   /// Post methot for voting
   /// post: /v1/votes
   ///
@@ -1398,6 +1395,17 @@ class PollpowerUrlResolve with OpenApiUrlEncodeMixin {
           )
         ])
       ],
+    );
+    return request;
+  }
+
+  /// get: /v1/ws
+  ///
+  OpenApiClientRequest subscribe() {
+    final request = OpenApiClientRequest(
+      'get',
+      '/v1/ws',
+      [],
     );
     return request;
   }
@@ -1475,17 +1483,6 @@ class PollPowerAPIRouter extends OpenApiServerRouterBase {
       ],
     );
     addRoute(
-      '/v1/ws',
-      'get',
-      (OpenApiRequest request) async {
-        return await impl.invoke(
-          request,
-          (PollPowerAPIContract impl) async => impl.subscribe(),
-        );
-      },
-      security: [],
-    );
-    addRoute(
       '/v1/votes',
       'post',
       (OpenApiRequest request) async {
@@ -1503,6 +1500,17 @@ class PollPowerAPIRouter extends OpenApiServerRouterBase {
           )
         ])
       ],
+    );
+    addRoute(
+      '/v1/ws',
+      'get',
+      (OpenApiRequest request) async {
+        return await impl.invoke(
+          request,
+          (PollPowerAPIContract impl) async => impl.subscribe(),
+        );
+      },
+      security: [],
     );
   }
 }
