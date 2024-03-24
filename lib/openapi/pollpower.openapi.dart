@@ -1135,7 +1135,7 @@ sealed class SignUpCandidateResponse extends OpenApiResponse
   }
 }
 
-abstract class Pollpower implements ApiEndpoint {
+abstract class PollPowerAPIContract implements ApiEndpoint {
   /// get: /v1/
   Future<GetBasePathResponse> getBasePath();
 
@@ -1170,12 +1170,12 @@ abstract class Pollpower implements ApiEndpoint {
   Future<SignUpCandidateResponse> signUpCandidate(Candidate body);
 }
 
-abstract class PollpowerClient implements OpenApiClient {
-  factory PollpowerClient(
+abstract class PollPowerAPIClient implements OpenApiClient {
+  factory PollPowerAPIClient(
     Uri baseUri,
     OpenApiRequestSender requestSender,
   ) =>
-      _PollpowerClientImpl._(
+      _PollPowerAPIClientImpl._(
         baseUri,
         requestSender,
       );
@@ -1221,9 +1221,9 @@ abstract class PollpowerClient implements OpenApiClient {
   Future<SignUpCandidateResponse> signUpCandidate(Candidate body);
 }
 
-class _PollpowerClientImpl extends OpenApiClientBase
-    implements PollpowerClient {
-  _PollpowerClientImpl._(
+class _PollPowerAPIClientImpl extends OpenApiClientBase
+    implements PollPowerAPIClient {
+  _PollPowerAPIClientImpl._(
     this.baseUri,
     this.requestSender,
   );
@@ -1453,7 +1453,7 @@ class _PollpowerClientImpl extends OpenApiClientBase
   }
 }
 
-class PollpowerUrlResolve with OpenApiUrlEncodeMixin {
+class PollPowerUrlResolve with OpenApiUrlEncodeMixin {
   /// get: /v1/
   ///
   OpenApiClientRequest getBasePath() {
@@ -1554,10 +1554,10 @@ class PollpowerUrlResolve with OpenApiUrlEncodeMixin {
   }
 }
 
-class PollpowerRouter extends OpenApiServerRouterBase {
-  PollpowerRouter(this.impl);
+class PollPowerAPIRouter extends OpenApiServerRouterBase {
+  PollPowerAPIRouter(this.impl);
 
-  final ApiEndpointProvider<Pollpower> impl;
+  final ApiEndpointProvider<PollPowerAPIContract> impl;
 
   @override
   void configure() {
@@ -1567,7 +1567,7 @@ class PollpowerRouter extends OpenApiServerRouterBase {
       (OpenApiRequest request) async {
         return await impl.invoke(
           request,
-          (Pollpower impl) async => impl.getBasePath(),
+          (PollPowerAPIContract impl) async => impl.getBasePath(),
         );
       },
       security: [],
@@ -1578,7 +1578,7 @@ class PollpowerRouter extends OpenApiServerRouterBase {
       (OpenApiRequest request) async {
         return await impl.invoke(
           request,
-          (Pollpower impl) async => impl.loginUser(
+          (PollPowerAPIContract impl) async => impl.loginUser(
               UserLoginRequest.fromJson(await request.readJsonBody())),
         );
       },
@@ -1590,7 +1590,7 @@ class PollpowerRouter extends OpenApiServerRouterBase {
       (OpenApiRequest request) async {
         return await impl.invoke(
           request,
-          (Pollpower impl) async => impl.getCandidates(),
+          (PollPowerAPIContract impl) async => impl.getCandidates(),
         );
       },
       security: [
@@ -1608,7 +1608,7 @@ class PollpowerRouter extends OpenApiServerRouterBase {
       (OpenApiRequest request) async {
         return await impl.invoke(
           request,
-          (Pollpower impl) async => impl.voteCandidate(
+          (PollPowerAPIContract impl) async => impl.voteCandidate(
               VotingRequest.fromJson(await request.readJsonBody())),
         );
       },
@@ -1627,7 +1627,7 @@ class PollpowerRouter extends OpenApiServerRouterBase {
       (OpenApiRequest request) async {
         return await impl.invoke(
           request,
-          (Pollpower impl) async => impl.subscribe(),
+          (PollPowerAPIContract impl) async => impl.subscribe(),
         );
       },
       security: [],
@@ -1638,7 +1638,7 @@ class PollpowerRouter extends OpenApiServerRouterBase {
       (OpenApiRequest request) async {
         return await impl.invoke(
           request,
-          (Pollpower impl) async =>
+          (PollPowerAPIContract impl) async =>
               impl.signUpUser(User.fromJson(await request.readJsonBody())),
         );
       },
@@ -1650,7 +1650,7 @@ class PollpowerRouter extends OpenApiServerRouterBase {
       (OpenApiRequest request) async {
         return await impl.invoke(
           request,
-          (Pollpower impl) async => impl.signUpCandidate(
+          (PollPowerAPIContract impl) async => impl.signUpCandidate(
               Candidate.fromJson(await request.readJsonBody())),
         );
       },
