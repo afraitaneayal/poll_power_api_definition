@@ -17,7 +17,18 @@ servers:
         url: 'http://localhost:8080'
         description: ''
 paths:
-    /v1/auth/login:
+    /v1/:
+        summary: Base path
+        get:
+            responses:
+                '200':
+                    content:
+                        text/xml:
+                            schema:
+                                type: string
+                    description: Welcome
+            operationId: GetBasePath
+    /v1/v1/auth/login:
         summary: Login path
         description: Login path for both user and candidate
         post:
@@ -49,7 +60,7 @@ paths:
             operationId: LoginUser
             summary: Post methode for loggin
             description: Post methode that allow user to send thier info and get their credentials
-    /v1/auth/signup:
+    /v1/v1/auth/signup:
         post:
             responses:
                 '201':
@@ -81,7 +92,7 @@ paths:
                     type: boolean
                 in: query
                 required: true
-    /v1/candidates:
+    /v1/v1/candidates:
         description: This path allow getting all available candidates
         get:
             responses:
@@ -116,7 +127,7 @@ paths:
                     JWT: []
             operationId: GetCandidates
             summary: Get method
-    /v1/ws:
+    /v1/v1/ws:
         get:
             responses:
                 '200':
@@ -126,7 +137,7 @@ paths:
                                 $ref: '#/components/schemas/WsResponse'
                     description: Successfuly connected to web socket
             operationId: Subscribe
-    /v1/votes:
+    /v1/v1/votes:
         summary: Path to vote a candidate
         post:
             requestBody:
@@ -315,3 +326,6 @@ tags:
     -
         name: v1
         description: First version of the specification
+    -
+        name: v1.2
+        description: Some base HTTP method requirements fixed

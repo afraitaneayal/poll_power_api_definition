@@ -310,6 +310,60 @@ class VotingRequest implements OpenApiContent {
   String toString() => toJson().toString();
 }
 
+class GetBasePathResponse200 extends GetBasePathResponse
+    implements OpenApiResponseBodyString {
+  /// Welcome
+  GetBasePathResponse200.response200(this.body) : status = 200;
+
+  @override
+  final int status;
+
+  @override
+  final String body;
+
+  @override
+  final OpenApiContentType contentType = OpenApiContentType.parse('text/xml');
+
+  @override
+  Map<String, Object?> propertiesToString() => {
+        'status': status,
+        'body': body,
+        'contentType': contentType,
+      };
+}
+
+sealed class GetBasePathResponse extends OpenApiResponse
+    implements HasSuccessResponse<String> {
+  GetBasePathResponse();
+
+  /// Welcome
+  factory GetBasePathResponse.response200(String body) =>
+      GetBasePathResponse200.response200(body);
+
+  R map<R>({
+    required ResponseMap<GetBasePathResponse200, R> on200,
+    ResponseMap<GetBasePathResponse, R>? onElse,
+  }) {
+    if (this is GetBasePathResponse200) {
+      return on200((this as GetBasePathResponse200));
+    } else if (onElse != null) {
+      return onElse(this);
+    } else {
+      throw StateError('Invalid instance of type $this');
+    }
+  }
+
+  /// status 200:  Welcome
+  @override
+  String requireSuccess() {
+    if (this is GetBasePathResponse200) {
+      return (this as GetBasePathResponse200).body;
+    } else {
+      throw StateError('Expected success response, but got $this');
+    }
+  }
+}
+
 class LoginUserResponse200 extends LoginUserResponse {
   /// Login succesfuly trigger
   LoginUserResponse200.response200() : status = 200;
@@ -972,27 +1026,30 @@ sealed class VoteCandidateResponse extends OpenApiResponse
   }
 }
 
-abstract class PollpowerAPIContract implements ApiEndpoint {
+abstract class Pollpower implements ApiEndpoint {
+  /// get: /v1/
+  Future<GetBasePathResponse> getBasePath();
+
   /// Post methode for loggin
   /// Post methode that allow user to send thier info and get their credentials
-  /// post: /v1/auth/login
+  /// post: /v1/v1/auth/login
   /// [body]: Request to be send by user for loggin
   Future<LoginUserResponse> loginUser(UserLoginRequest body);
 
   /// Post method to create new user
   /// Post method to create new user and return their access
-  /// post: /v1/auth/signup
+  /// post: /v1/v1/auth/signup
   Future<SignUpUserResponse> signUpUser({required bool isCandidate});
 
   /// Get method
-  /// get: /v1/candidates
+  /// get: /v1/v1/candidates
   Future<GetCandidatesResponse> getCandidates();
 
-  /// get: /v1/ws
+  /// get: /v1/v1/ws
   Future<SubscribeResponse> subscribe();
 
   /// Post methot for voting
-  /// post: /v1/votes
+  /// post: /v1/v1/votes
   /// [body]:
   Future<VoteCandidateResponse> voteCandidate(VotingRequest body);
 }
@@ -1007,31 +1064,35 @@ abstract class PollpowerClient implements OpenApiClient {
         requestSender,
       );
 
+  /// get: /v1/
+  ///
+  Future<GetBasePathResponse> getBasePath();
+
   /// Post methode for loggin
   /// Post methode that allow user to send thier info and get their credentials
-  /// post: /v1/auth/login
+  /// post: /v1/v1/auth/login
   ///
   /// [body]: Request to be send by user for loggin
   Future<LoginUserResponse> loginUser(UserLoginRequest body);
 
   /// Post method to create new user
   /// Post method to create new user and return their access
-  /// post: /v1/auth/signup
+  /// post: /v1/v1/auth/signup
   ///
   /// * [isCandidate]: Tcheck if suser who want to sign is a candidate or not
   Future<SignUpUserResponse> signUpUser({required bool isCandidate});
 
   /// Get method
-  /// get: /v1/candidates
+  /// get: /v1/v1/candidates
   ///
   Future<GetCandidatesResponse> getCandidates();
 
-  /// get: /v1/ws
+  /// get: /v1/v1/ws
   ///
   Future<SubscribeResponse> subscribe();
 
   /// Post methot for voting
-  /// post: /v1/votes
+  /// post: /v1/v1/votes
   ///
   /// [body]:
   Future<VoteCandidateResponse> voteCandidate(VotingRequest body);
@@ -1050,16 +1111,35 @@ class _PollpowerClientImpl extends OpenApiClientBase
   @override
   final OpenApiRequestSender requestSender;
 
+  /// get: /v1/
+  ///
+  @override
+  Future<GetBasePathResponse> getBasePath() async {
+    final request = OpenApiClientRequest(
+      'get',
+      '/v1/',
+      [],
+    );
+    return await sendRequest(
+      request,
+      {
+        '200': (OpenApiClientResponse response) async =>
+            GetBasePathResponse200.response200(
+                await response.responseBodyString())
+      },
+    );
+  }
+
   /// Post methode for loggin
   /// Post methode that allow user to send thier info and get their credentials
-  /// post: /v1/auth/login
+  /// post: /v1/v1/auth/login
   ///
   /// [body]: Request to be send by user for loggin
   @override
   Future<LoginUserResponse> loginUser(UserLoginRequest body) async {
     final request = OpenApiClientRequest(
       'post',
-      '/v1/auth/login',
+      '/v1/v1/auth/login',
       [
         SecurityRequirement(schemes: [
           SecurityRequirementScheme(
@@ -1091,14 +1171,14 @@ class _PollpowerClientImpl extends OpenApiClientBase
 
   /// Post method to create new user
   /// Post method to create new user and return their access
-  /// post: /v1/auth/signup
+  /// post: /v1/v1/auth/signup
   ///
   /// * [isCandidate]: Tcheck if suser who want to sign is a candidate or not
   @override
   Future<SignUpUserResponse> signUpUser({required bool isCandidate}) async {
     final request = OpenApiClientRequest(
       'post',
-      '/v1/auth/signup',
+      '/v1/v1/auth/signup',
       [],
     );
     request.addQueryParameter(
@@ -1122,13 +1202,13 @@ class _PollpowerClientImpl extends OpenApiClientBase
   }
 
   /// Get method
-  /// get: /v1/candidates
+  /// get: /v1/v1/candidates
   ///
   @override
   Future<GetCandidatesResponse> getCandidates() async {
     final request = OpenApiClientRequest(
       'get',
-      '/v1/candidates',
+      '/v1/v1/candidates',
       [
         SecurityRequirement(schemes: [
           SecurityRequirementScheme(
@@ -1159,13 +1239,13 @@ class _PollpowerClientImpl extends OpenApiClientBase
     );
   }
 
-  /// get: /v1/ws
+  /// get: /v1/v1/ws
   ///
   @override
   Future<SubscribeResponse> subscribe() async {
     final request = OpenApiClientRequest(
       'get',
-      '/v1/ws',
+      '/v1/v1/ws',
       [],
     );
     return await sendRequest(
@@ -1179,14 +1259,14 @@ class _PollpowerClientImpl extends OpenApiClientBase
   }
 
   /// Post methot for voting
-  /// post: /v1/votes
+  /// post: /v1/v1/votes
   ///
   /// [body]:
   @override
   Future<VoteCandidateResponse> voteCandidate(VotingRequest body) async {
     final request = OpenApiClientRequest(
       'post',
-      '/v1/votes',
+      '/v1/v1/votes',
       [
         SecurityRequirement(schemes: [
           SecurityRequirementScheme(
@@ -1224,14 +1304,25 @@ class _PollpowerClientImpl extends OpenApiClientBase
 }
 
 class PollpowerUrlResolve with OpenApiUrlEncodeMixin {
+  /// get: /v1/
+  ///
+  OpenApiClientRequest getBasePath() {
+    final request = OpenApiClientRequest(
+      'get',
+      '/v1/',
+      [],
+    );
+    return request;
+  }
+
   /// Post methode for loggin
   /// Post methode that allow user to send thier info and get their credentials
-  /// post: /v1/auth/login
+  /// post: /v1/v1/auth/login
   ///
   OpenApiClientRequest loginUser() {
     final request = OpenApiClientRequest(
       'post',
-      '/v1/auth/login',
+      '/v1/v1/auth/login',
       [
         SecurityRequirement(schemes: [
           SecurityRequirementScheme(
@@ -1246,13 +1337,13 @@ class PollpowerUrlResolve with OpenApiUrlEncodeMixin {
 
   /// Post method to create new user
   /// Post method to create new user and return their access
-  /// post: /v1/auth/signup
+  /// post: /v1/v1/auth/signup
   ///
   /// * [isCandidate]: Tcheck if suser who want to sign is a candidate or not
   OpenApiClientRequest signUpUser({required bool isCandidate}) {
     final request = OpenApiClientRequest(
       'post',
-      '/v1/auth/signup',
+      '/v1/v1/auth/signup',
       [],
     );
     request.addQueryParameter(
@@ -1263,12 +1354,12 @@ class PollpowerUrlResolve with OpenApiUrlEncodeMixin {
   }
 
   /// Get method
-  /// get: /v1/candidates
+  /// get: /v1/v1/candidates
   ///
   OpenApiClientRequest getCandidates() {
     final request = OpenApiClientRequest(
       'get',
-      '/v1/candidates',
+      '/v1/v1/candidates',
       [
         SecurityRequirement(schemes: [
           SecurityRequirementScheme(
@@ -1281,24 +1372,24 @@ class PollpowerUrlResolve with OpenApiUrlEncodeMixin {
     return request;
   }
 
-  /// get: /v1/ws
+  /// get: /v1/v1/ws
   ///
   OpenApiClientRequest subscribe() {
     final request = OpenApiClientRequest(
       'get',
-      '/v1/ws',
+      '/v1/v1/ws',
       [],
     );
     return request;
   }
 
   /// Post methot for voting
-  /// post: /v1/votes
+  /// post: /v1/v1/votes
   ///
   OpenApiClientRequest voteCandidate() {
     final request = OpenApiClientRequest(
       'post',
-      '/v1/votes',
+      '/v1/v1/votes',
       [
         SecurityRequirement(schemes: [
           SecurityRequirementScheme(
@@ -1312,20 +1403,31 @@ class PollpowerUrlResolve with OpenApiUrlEncodeMixin {
   }
 }
 
-class PollPowerAPIRouter extends OpenApiServerRouterBase {
-  PollPowerAPIRouter(this.impl);
+class PollpowerRouter extends OpenApiServerRouterBase {
+  PollpowerRouter(this.impl);
 
-  final ApiEndpointProvider<PollpowerAPIContract> impl;
+  final ApiEndpointProvider<Pollpower> impl;
 
   @override
   void configure() {
     addRoute(
-      '/v1/auth/login',
+      '/v1/',
+      'get',
+      (OpenApiRequest request) async {
+        return await impl.invoke(
+          request,
+          (Pollpower impl) async => impl.getBasePath(),
+        );
+      },
+      security: [],
+    );
+    addRoute(
+      '/v1/v1/auth/login',
       'post',
       (OpenApiRequest request) async {
         return await impl.invoke(
           request,
-          (PollpowerAPIContract impl) async => impl.loginUser(
+          (Pollpower impl) async => impl.loginUser(
               UserLoginRequest.fromJson(await request.readJsonBody())),
         );
       },
@@ -1339,12 +1441,12 @@ class PollPowerAPIRouter extends OpenApiServerRouterBase {
       ],
     );
     addRoute(
-      '/v1/auth/signup',
+      '/v1/v1/auth/signup',
       'post',
       (OpenApiRequest request) async {
         return await impl.invoke(
           request,
-          (PollpowerAPIContract impl) async => impl.signUpUser(
+          (Pollpower impl) async => impl.signUpUser(
               isCandidate: paramRequired(
             name: 'isCandidate',
             value: request.queryParameter('isCandidate'),
@@ -1355,12 +1457,12 @@ class PollPowerAPIRouter extends OpenApiServerRouterBase {
       security: [],
     );
     addRoute(
-      '/v1/candidates',
+      '/v1/v1/candidates',
       'get',
       (OpenApiRequest request) async {
         return await impl.invoke(
           request,
-          (PollpowerAPIContract impl) async => impl.getCandidates(),
+          (Pollpower impl) async => impl.getCandidates(),
         );
       },
       security: [
@@ -1373,23 +1475,23 @@ class PollPowerAPIRouter extends OpenApiServerRouterBase {
       ],
     );
     addRoute(
-      '/v1/ws',
+      '/v1/v1/ws',
       'get',
       (OpenApiRequest request) async {
         return await impl.invoke(
           request,
-          (PollpowerAPIContract impl) async => impl.subscribe(),
+          (Pollpower impl) async => impl.subscribe(),
         );
       },
       security: [],
     );
     addRoute(
-      '/v1/votes',
+      '/v1/v1/votes',
       'post',
       (OpenApiRequest request) async {
         return await impl.invoke(
           request,
-          (PollpowerAPIContract impl) async => impl.voteCandidate(
+          (Pollpower impl) async => impl.voteCandidate(
               VotingRequest.fromJson(await request.readJsonBody())),
         );
       },
