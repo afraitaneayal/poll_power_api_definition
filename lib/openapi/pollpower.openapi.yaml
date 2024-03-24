@@ -217,8 +217,7 @@ components:
                 - first_name
                 - grade
                 - last_name
-                - password
-                - id
+                - password                
             type: object
             properties:
                 email:
@@ -234,10 +233,7 @@ components:
                 area_of_study:
                     type: string
                 image:
-                    type: string
-                id:
-                    description: ''
-                    type: string
+                    type: string               
             example:
                 email: ''
                 password: ''

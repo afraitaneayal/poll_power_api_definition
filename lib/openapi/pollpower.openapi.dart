@@ -19,7 +19,6 @@ class User implements OpenApiContent {
     required this.grade,
     required this.areaOfStudy,
     this.image,
-    required this.id,
   });
 
   factory User.fromJson(Map<String, dynamic> jsonMap) =>
@@ -66,13 +65,6 @@ class User implements OpenApiContent {
     includeIfNull: false,
   )
   final String? image;
-
-  ///
-  @JsonKey(
-    name: 'id',
-    includeIfNull: false,
-  )
-  final String id;
 
   Map<String, dynamic> toJson() => _$UserToJson(this);
 
@@ -166,13 +158,13 @@ class UserLoginRequest implements OpenApiContent {
 
 @JsonSerializable()
 @ApiUuidJsonConverter()
-class ErrorError implements OpenApiContent {
-  ErrorError({
+class APIError implements OpenApiContent {
+  APIError({
     this.devMessage,
     this.userFriendlyMessage,
   });
 
-  factory ErrorError.fromJson(Map<String, dynamic> jsonMap) =>
+  factory APIError.fromJson(Map<String, dynamic> jsonMap) =>
       _$ErrorErrorFromJson(jsonMap);
 
   @JsonKey(
@@ -206,7 +198,7 @@ class Error implements OpenApiContent {
     name: 'error',
     includeIfNull: false,
   )
-  final ErrorError? error;
+  final APIError? error;
 
   Map<String, dynamic> toJson() => _$ErrorToJson(this);
 
@@ -1143,7 +1135,7 @@ sealed class SignUpCandidateResponse extends OpenApiResponse
   }
 }
 
-abstract class PollPowerAPIContract implements ApiEndpoint {
+abstract class Pollpower implements ApiEndpoint {
   /// get: /v1/
   Future<GetBasePathResponse> getBasePath();
 
@@ -1178,12 +1170,12 @@ abstract class PollPowerAPIContract implements ApiEndpoint {
   Future<SignUpCandidateResponse> signUpCandidate(Candidate body);
 }
 
-abstract class PollPowerAPIClient implements OpenApiClient {
-  factory PollPowerAPIClient(
+abstract class PollpowerClient implements OpenApiClient {
+  factory PollpowerClient(
     Uri baseUri,
     OpenApiRequestSender requestSender,
   ) =>
-      _PollPowerAPIClientImpl._(
+      _PollpowerClientImpl._(
         baseUri,
         requestSender,
       );
@@ -1229,9 +1221,9 @@ abstract class PollPowerAPIClient implements OpenApiClient {
   Future<SignUpCandidateResponse> signUpCandidate(Candidate body);
 }
 
-class _PollPowerAPIClientImpl extends OpenApiClientBase
-    implements PollPowerAPIClient {
-  _PollPowerAPIClientImpl._(
+class _PollpowerClientImpl extends OpenApiClientBase
+    implements PollpowerClient {
+  _PollpowerClientImpl._(
     this.baseUri,
     this.requestSender,
   );
@@ -1461,7 +1453,7 @@ class _PollPowerAPIClientImpl extends OpenApiClientBase
   }
 }
 
-class PollPowerAPIUrlResolve with OpenApiUrlEncodeMixin {
+class PollpowerUrlResolve with OpenApiUrlEncodeMixin {
   /// get: /v1/
   ///
   OpenApiClientRequest getBasePath() {
@@ -1562,10 +1554,10 @@ class PollPowerAPIUrlResolve with OpenApiUrlEncodeMixin {
   }
 }
 
-class PollPowerAPIRouter extends OpenApiServerRouterBase {
-  PollPowerAPIRouter(this.impl);
+class PollpowerRouter extends OpenApiServerRouterBase {
+  PollpowerRouter(this.impl);
 
-  final ApiEndpointProvider<PollPowerAPIContract> impl;
+  final ApiEndpointProvider<Pollpower> impl;
 
   @override
   void configure() {
@@ -1575,7 +1567,7 @@ class PollPowerAPIRouter extends OpenApiServerRouterBase {
       (OpenApiRequest request) async {
         return await impl.invoke(
           request,
-          (PollPowerAPIContract impl) async => impl.getBasePath(),
+          (Pollpower impl) async => impl.getBasePath(),
         );
       },
       security: [],
@@ -1586,7 +1578,7 @@ class PollPowerAPIRouter extends OpenApiServerRouterBase {
       (OpenApiRequest request) async {
         return await impl.invoke(
           request,
-          (PollPowerAPIContract impl) async => impl.loginUser(
+          (Pollpower impl) async => impl.loginUser(
               UserLoginRequest.fromJson(await request.readJsonBody())),
         );
       },
@@ -1598,7 +1590,7 @@ class PollPowerAPIRouter extends OpenApiServerRouterBase {
       (OpenApiRequest request) async {
         return await impl.invoke(
           request,
-          (PollPowerAPIContract impl) async => impl.getCandidates(),
+          (Pollpower impl) async => impl.getCandidates(),
         );
       },
       security: [
@@ -1616,7 +1608,7 @@ class PollPowerAPIRouter extends OpenApiServerRouterBase {
       (OpenApiRequest request) async {
         return await impl.invoke(
           request,
-          (PollPowerAPIContract impl) async => impl.voteCandidate(
+          (Pollpower impl) async => impl.voteCandidate(
               VotingRequest.fromJson(await request.readJsonBody())),
         );
       },
@@ -1635,7 +1627,7 @@ class PollPowerAPIRouter extends OpenApiServerRouterBase {
       (OpenApiRequest request) async {
         return await impl.invoke(
           request,
-          (PollPowerAPIContract impl) async => impl.subscribe(),
+          (Pollpower impl) async => impl.subscribe(),
         );
       },
       security: [],
@@ -1646,7 +1638,7 @@ class PollPowerAPIRouter extends OpenApiServerRouterBase {
       (OpenApiRequest request) async {
         return await impl.invoke(
           request,
-          (PollPowerAPIContract impl) async =>
+          (Pollpower impl) async =>
               impl.signUpUser(User.fromJson(await request.readJsonBody())),
         );
       },
@@ -1658,7 +1650,7 @@ class PollPowerAPIRouter extends OpenApiServerRouterBase {
       (OpenApiRequest request) async {
         return await impl.invoke(
           request,
-          (PollPowerAPIContract impl) async => impl.signUpCandidate(
+          (Pollpower impl) async => impl.signUpCandidate(
               Candidate.fromJson(await request.readJsonBody())),
         );
       },
