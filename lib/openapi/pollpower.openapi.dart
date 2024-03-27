@@ -158,14 +158,14 @@ class UserLoginRequest implements OpenApiContent {
 
 @JsonSerializable()
 @ApiUuidJsonConverter()
-class APIErrorContent implements OpenApiContent {
-  APIErrorContent({
+class ErrorError implements OpenApiContent {
+  ErrorError({
     this.devMessage,
     this.userFriendlyMessage,
   });
 
-  factory APIErrorContent.fromJson(Map<String, dynamic> jsonMap) =>
-      _$APIErrorContentFromJson(jsonMap);
+  factory ErrorError.fromJson(Map<String, dynamic> jsonMap) =>
+      _$ErrorErrorFromJson(jsonMap);
 
   @JsonKey(
     name: 'devMessage',
@@ -188,19 +188,19 @@ class APIErrorContent implements OpenApiContent {
 /// Base error response
 @JsonSerializable()
 @ApiUuidJsonConverter()
-class APIError implements OpenApiContent {
-  APIError({this.error});
+class Error implements OpenApiContent {
+  Error({this.error});
 
-  factory APIError.fromJson(Map<String, dynamic> jsonMap) =>
-      _$APIErrorFromJson(jsonMap);
+  factory Error.fromJson(Map<String, dynamic> jsonMap) =>
+      _$ErrorFromJson(jsonMap);
 
   @JsonKey(
     name: 'error',
     includeIfNull: false,
   )
-  final APIErrorContent? error;
+  final ErrorError? error;
 
-  Map<String, dynamic> toJson() => _$APIErrorToJson(this);
+  Map<String, dynamic> toJson() => _$ErrorToJson(this);
 
   @override
   String toString() => toJson().toString();
@@ -381,7 +381,7 @@ class LoginUserResponse400 extends LoginUserResponse
   @override
   final int status;
 
-  final APIError body;
+  final Error body;
 
   @override
   final Map<String, dynamic> bodyJson;
@@ -409,7 +409,7 @@ class LoginUserResponse500 extends LoginUserResponse
   @override
   final int status;
 
-  final APIError body;
+  final Error body;
 
   @override
   final Map<String, dynamic> bodyJson;
@@ -436,11 +436,11 @@ sealed class LoginUserResponse extends OpenApiResponse
       LoginUserResponse200.response200(body);
 
   /// User send bad request like v1/auth/login with get methode
-  factory LoginUserResponse.response400(APIError body) =>
+  factory LoginUserResponse.response400(Error body) =>
       LoginUserResponse400.response400(body);
 
   /// Internal server error
-  factory LoginUserResponse.response500(APIError body) =>
+  factory LoginUserResponse.response500(Error body) =>
       LoginUserResponse500.response500(body);
 
   R map<R>({
@@ -511,7 +511,7 @@ class GetCandidatesResponse400 extends GetCandidatesResponse
   @override
   final int status;
 
-  final APIError body;
+  final Error body;
 
   @override
   final Map<String, dynamic> bodyJson;
@@ -539,7 +539,7 @@ class GetCandidatesResponse401 extends GetCandidatesResponse
   @override
   final int status;
 
-  final APIError body;
+  final Error body;
 
   @override
   final Map<String, dynamic> bodyJson;
@@ -567,7 +567,7 @@ class GetCandidatesResponse500 extends GetCandidatesResponse
   @override
   final int status;
 
-  final APIError body;
+  final Error body;
 
   @override
   final Map<String, dynamic> bodyJson;
@@ -594,15 +594,15 @@ sealed class GetCandidatesResponse extends OpenApiResponse
       GetCandidatesResponse200.response200(body);
 
   /// Bad request
-  factory GetCandidatesResponse.response400(APIError body) =>
+  factory GetCandidatesResponse.response400(Error body) =>
       GetCandidatesResponse400.response400(body);
 
   /// Unauthorized user
-  factory GetCandidatesResponse.response401(APIError body) =>
+  factory GetCandidatesResponse.response401(Error body) =>
       GetCandidatesResponse401.response401(body);
 
   /// Internal server error
-  factory GetCandidatesResponse.response500(APIError body) =>
+  factory GetCandidatesResponse.response500(Error body) =>
       GetCandidatesResponse500.response500(body);
 
   R map<R>({
@@ -665,7 +665,7 @@ class VoteCandidateResponse400 extends VoteCandidateResponse
   @override
   final int status;
 
-  final APIError body;
+  final Error body;
 
   @override
   final Map<String, dynamic> bodyJson;
@@ -693,7 +693,7 @@ class VoteCandidateResponse401 extends VoteCandidateResponse
   @override
   final int status;
 
-  final APIError body;
+  final Error body;
 
   @override
   final Map<String, dynamic> bodyJson;
@@ -721,7 +721,7 @@ class VoteCandidateResponse404 extends VoteCandidateResponse
   @override
   final int status;
 
-  final APIError body;
+  final Error body;
 
   @override
   final Map<String, dynamic> bodyJson;
@@ -749,7 +749,7 @@ class VoteCandidateResponse500 extends VoteCandidateResponse
   @override
   final int status;
 
-  final APIError body;
+  final Error body;
 
   @override
   final Map<String, dynamic> bodyJson;
@@ -776,19 +776,19 @@ sealed class VoteCandidateResponse extends OpenApiResponse
       VoteCandidateResponse200.response200();
 
   /// Bad request
-  factory VoteCandidateResponse.response400(APIError body) =>
+  factory VoteCandidateResponse.response400(Error body) =>
       VoteCandidateResponse400.response400(body);
 
   /// Unauthorized user
-  factory VoteCandidateResponse.response401(APIError body) =>
+  factory VoteCandidateResponse.response401(Error body) =>
       VoteCandidateResponse401.response401(body);
 
   /// Candidate not found
-  factory VoteCandidateResponse.response404(APIError body) =>
+  factory VoteCandidateResponse.response404(Error body) =>
       VoteCandidateResponse404.response404(body);
 
   /// Internal server error
-  factory VoteCandidateResponse.response500(APIError body) =>
+  factory VoteCandidateResponse.response500(Error body) =>
       VoteCandidateResponse500.response500(body);
 
   R map<R>({
@@ -913,7 +913,7 @@ class SignUpUserResponse400 extends SignUpUserResponse
   @override
   final int status;
 
-  final APIError body;
+  final Error body;
 
   @override
   final Map<String, dynamic> bodyJson;
@@ -941,7 +941,7 @@ class SignUpUserResponse500 extends SignUpUserResponse
   @override
   final int status;
 
-  final APIError body;
+  final Error body;
 
   @override
   final Map<String, dynamic> bodyJson;
@@ -968,11 +968,11 @@ sealed class SignUpUserResponse extends OpenApiResponse
       SignUpUserResponse201.response201(body);
 
   /// Bad request
-  factory SignUpUserResponse.response400(APIError body) =>
+  factory SignUpUserResponse.response400(Error body) =>
       SignUpUserResponse400.response400(body);
 
   /// Internal server error
-  factory SignUpUserResponse.response500(APIError body) =>
+  factory SignUpUserResponse.response500(Error body) =>
       SignUpUserResponse500.response500(body);
 
   R map<R>({
@@ -1043,7 +1043,7 @@ class SignUpCandidateResponse400 extends SignUpCandidateResponse
   @override
   final int status;
 
-  final APIError body;
+  final Error body;
 
   @override
   final Map<String, dynamic> bodyJson;
@@ -1071,7 +1071,7 @@ class SignUpCandidateResponse500 extends SignUpCandidateResponse
   @override
   final int status;
 
-  final APIError body;
+  final Error body;
 
   @override
   final Map<String, dynamic> bodyJson;
@@ -1098,11 +1098,11 @@ sealed class SignUpCandidateResponse extends OpenApiResponse
       SignUpCandidateResponse201.response201(body);
 
   /// Bad request
-  factory SignUpCandidateResponse.response400(APIError body) =>
+  factory SignUpCandidateResponse.response400(Error body) =>
       SignUpCandidateResponse400.response400(body);
 
   /// Internal server error
-  factory SignUpCandidateResponse.response500(APIError body) =>
+  factory SignUpCandidateResponse.response500(Error body) =>
       SignUpCandidateResponse500.response500(body);
 
   R map<R>({
@@ -1135,7 +1135,7 @@ sealed class SignUpCandidateResponse extends OpenApiResponse
   }
 }
 
-abstract class PollPowerAPIContract implements ApiEndpoint {
+abstract class Pollpower implements ApiEndpoint {
   /// get: /v1/
   Future<GetBasePathResponse> getBasePath();
 
@@ -1170,12 +1170,12 @@ abstract class PollPowerAPIContract implements ApiEndpoint {
   Future<SignUpCandidateResponse> signUpCandidate(Candidate body);
 }
 
-abstract class PollPowerAPIClient implements OpenApiClient {
-  factory PollPowerAPIClient(
+abstract class PollpowerClient implements OpenApiClient {
+  factory PollpowerClient(
     Uri baseUri,
     OpenApiRequestSender requestSender,
   ) =>
-      _PollPowerAPIClientImpl._(
+      _PollpowerClientImpl._(
         baseUri,
         requestSender,
       );
@@ -1221,9 +1221,9 @@ abstract class PollPowerAPIClient implements OpenApiClient {
   Future<SignUpCandidateResponse> signUpCandidate(Candidate body);
 }
 
-class _PollPowerAPIClientImpl extends OpenApiClientBase
-    implements PollPowerAPIClient {
-  _PollPowerAPIClientImpl._(
+class _PollpowerClientImpl extends OpenApiClientBase
+    implements PollpowerClient {
+  _PollpowerClientImpl._(
     this.baseUri,
     this.requestSender,
   );
@@ -1241,7 +1241,14 @@ class _PollPowerAPIClientImpl extends OpenApiClientBase
     final request = OpenApiClientRequest(
       'get',
       '/v1/',
-      [],
+      [
+        SecurityRequirement(schemes: [
+          SecurityRequirementScheme(
+            scheme: SecuritySchemes.jwt,
+            scopes: [],
+          )
+        ])
+      ],
     );
     return await sendRequest(
       request,
@@ -1263,7 +1270,14 @@ class _PollPowerAPIClientImpl extends OpenApiClientBase
     final request = OpenApiClientRequest(
       'post',
       '/v1/auth/login',
-      [],
+      [
+        SecurityRequirement(schemes: [
+          SecurityRequirementScheme(
+            scheme: SecuritySchemes.jwt,
+            scopes: [],
+          )
+        ])
+      ],
     );
     request.setHeader(
       'content-type',
@@ -1278,10 +1292,10 @@ class _PollPowerAPIClientImpl extends OpenApiClientBase
                 JWTresponse.fromJson(await response.responseBodyJson())),
         '400': (OpenApiClientResponse response) async =>
             LoginUserResponse400.response400(
-                APIError.fromJson(await response.responseBodyJson())),
+                Error.fromJson(await response.responseBodyJson())),
         '500': (OpenApiClientResponse response) async =>
             LoginUserResponse500.response500(
-                APIError.fromJson(await response.responseBodyJson())),
+                Error.fromJson(await response.responseBodyJson())),
       },
     );
   }
@@ -1313,13 +1327,13 @@ class _PollPowerAPIClientImpl extends OpenApiClientBase
                 .toList()),
         '400': (OpenApiClientResponse response) async =>
             GetCandidatesResponse400.response400(
-                APIError.fromJson(await response.responseBodyJson())),
+                Error.fromJson(await response.responseBodyJson())),
         '401': (OpenApiClientResponse response) async =>
             GetCandidatesResponse401.response401(
-                APIError.fromJson(await response.responseBodyJson())),
+                Error.fromJson(await response.responseBodyJson())),
         '500': (OpenApiClientResponse response) async =>
             GetCandidatesResponse500.response500(
-                APIError.fromJson(await response.responseBodyJson())),
+                Error.fromJson(await response.responseBodyJson())),
       },
     );
   }
@@ -1354,16 +1368,16 @@ class _PollPowerAPIClientImpl extends OpenApiClientBase
             VoteCandidateResponse200.response200(),
         '400': (OpenApiClientResponse response) async =>
             VoteCandidateResponse400.response400(
-                APIError.fromJson(await response.responseBodyJson())),
+                Error.fromJson(await response.responseBodyJson())),
         '401': (OpenApiClientResponse response) async =>
             VoteCandidateResponse401.response401(
-                APIError.fromJson(await response.responseBodyJson())),
+                Error.fromJson(await response.responseBodyJson())),
         '404': (OpenApiClientResponse response) async =>
             VoteCandidateResponse404.response404(
-                APIError.fromJson(await response.responseBodyJson())),
+                Error.fromJson(await response.responseBodyJson())),
         '500': (OpenApiClientResponse response) async =>
             VoteCandidateResponse500.response500(
-                APIError.fromJson(await response.responseBodyJson())),
+                Error.fromJson(await response.responseBodyJson())),
       },
     );
   }
@@ -1375,7 +1389,14 @@ class _PollPowerAPIClientImpl extends OpenApiClientBase
     final request = OpenApiClientRequest(
       'get',
       '/v1/ws',
-      [],
+      [
+        SecurityRequirement(schemes: [
+          SecurityRequirementScheme(
+            scheme: SecuritySchemes.jwt,
+            scopes: [],
+          )
+        ])
+      ],
     );
     return await sendRequest(
       request,
@@ -1396,7 +1417,14 @@ class _PollPowerAPIClientImpl extends OpenApiClientBase
     final request = OpenApiClientRequest(
       'post',
       '/v1/auth/signup/user',
-      [],
+      [
+        SecurityRequirement(schemes: [
+          SecurityRequirementScheme(
+            scheme: SecuritySchemes.jwt,
+            scopes: [],
+          )
+        ])
+      ],
     );
     request.setHeader(
       'content-type',
@@ -1411,10 +1439,10 @@ class _PollPowerAPIClientImpl extends OpenApiClientBase
                 User.fromJson(await response.responseBodyJson())),
         '400': (OpenApiClientResponse response) async =>
             SignUpUserResponse400.response400(
-                APIError.fromJson(await response.responseBodyJson())),
+                Error.fromJson(await response.responseBodyJson())),
         '500': (OpenApiClientResponse response) async =>
             SignUpUserResponse500.response500(
-                APIError.fromJson(await response.responseBodyJson())),
+                Error.fromJson(await response.responseBodyJson())),
       },
     );
   }
@@ -1429,7 +1457,14 @@ class _PollPowerAPIClientImpl extends OpenApiClientBase
     final request = OpenApiClientRequest(
       'post',
       '/v1/auth/signup/candidate',
-      [],
+      [
+        SecurityRequirement(schemes: [
+          SecurityRequirementScheme(
+            scheme: SecuritySchemes.jwt,
+            scopes: [],
+          )
+        ])
+      ],
     );
     request.setHeader(
       'content-type',
@@ -1444,23 +1479,30 @@ class _PollPowerAPIClientImpl extends OpenApiClientBase
                 Candidate.fromJson(await response.responseBodyJson())),
         '400': (OpenApiClientResponse response) async =>
             SignUpCandidateResponse400.response400(
-                APIError.fromJson(await response.responseBodyJson())),
+                Error.fromJson(await response.responseBodyJson())),
         '500': (OpenApiClientResponse response) async =>
             SignUpCandidateResponse500.response500(
-                APIError.fromJson(await response.responseBodyJson())),
+                Error.fromJson(await response.responseBodyJson())),
       },
     );
   }
 }
 
-class PollPowerUrlResolve with OpenApiUrlEncodeMixin {
+class PollpowerUrlResolve with OpenApiUrlEncodeMixin {
   /// get: /v1/
   ///
   OpenApiClientRequest getBasePath() {
     final request = OpenApiClientRequest(
       'get',
       '/v1/',
-      [],
+      [
+        SecurityRequirement(schemes: [
+          SecurityRequirementScheme(
+            scheme: SecuritySchemes.jwt,
+            scopes: [],
+          )
+        ])
+      ],
     );
     return request;
   }
@@ -1473,7 +1515,14 @@ class PollPowerUrlResolve with OpenApiUrlEncodeMixin {
     final request = OpenApiClientRequest(
       'post',
       '/v1/auth/login',
-      [],
+      [
+        SecurityRequirement(schemes: [
+          SecurityRequirementScheme(
+            scheme: SecuritySchemes.jwt,
+            scopes: [],
+          )
+        ])
+      ],
     );
     return request;
   }
@@ -1522,7 +1571,14 @@ class PollPowerUrlResolve with OpenApiUrlEncodeMixin {
     final request = OpenApiClientRequest(
       'get',
       '/v1/ws',
-      [],
+      [
+        SecurityRequirement(schemes: [
+          SecurityRequirementScheme(
+            scheme: SecuritySchemes.jwt,
+            scopes: [],
+          )
+        ])
+      ],
     );
     return request;
   }
@@ -1535,7 +1591,14 @@ class PollPowerUrlResolve with OpenApiUrlEncodeMixin {
     final request = OpenApiClientRequest(
       'post',
       '/v1/auth/signup/user',
-      [],
+      [
+        SecurityRequirement(schemes: [
+          SecurityRequirementScheme(
+            scheme: SecuritySchemes.jwt,
+            scopes: [],
+          )
+        ])
+      ],
     );
     return request;
   }
@@ -1548,16 +1611,23 @@ class PollPowerUrlResolve with OpenApiUrlEncodeMixin {
     final request = OpenApiClientRequest(
       'post',
       '/v1/auth/signup/candidate',
-      [],
+      [
+        SecurityRequirement(schemes: [
+          SecurityRequirementScheme(
+            scheme: SecuritySchemes.jwt,
+            scopes: [],
+          )
+        ])
+      ],
     );
     return request;
   }
 }
 
-class PollPowerAPIRouter extends OpenApiServerRouterBase {
-  PollPowerAPIRouter(this.impl);
+class PollpowerRouter extends OpenApiServerRouterBase {
+  PollpowerRouter(this.impl);
 
-  final ApiEndpointProvider<PollPowerAPIContract> impl;
+  final ApiEndpointProvider<Pollpower> impl;
 
   @override
   void configure() {
@@ -1567,10 +1637,17 @@ class PollPowerAPIRouter extends OpenApiServerRouterBase {
       (OpenApiRequest request) async {
         return await impl.invoke(
           request,
-          (PollPowerAPIContract impl) async => impl.getBasePath(),
+          (Pollpower impl) async => impl.getBasePath(),
         );
       },
-      security: [],
+      security: [
+        SecurityRequirement(schemes: [
+          SecurityRequirementScheme(
+            scheme: SecuritySchemes.jwt,
+            scopes: [],
+          )
+        ])
+      ],
     );
     addRoute(
       '/v1/auth/login',
@@ -1578,11 +1655,18 @@ class PollPowerAPIRouter extends OpenApiServerRouterBase {
       (OpenApiRequest request) async {
         return await impl.invoke(
           request,
-          (PollPowerAPIContract impl) async => impl.loginUser(
+          (Pollpower impl) async => impl.loginUser(
               UserLoginRequest.fromJson(await request.readJsonBody())),
         );
       },
-      security: [],
+      security: [
+        SecurityRequirement(schemes: [
+          SecurityRequirementScheme(
+            scheme: SecuritySchemes.jwt,
+            scopes: [],
+          )
+        ])
+      ],
     );
     addRoute(
       '/v1/candidates',
@@ -1590,7 +1674,7 @@ class PollPowerAPIRouter extends OpenApiServerRouterBase {
       (OpenApiRequest request) async {
         return await impl.invoke(
           request,
-          (PollPowerAPIContract impl) async => impl.getCandidates(),
+          (Pollpower impl) async => impl.getCandidates(),
         );
       },
       security: [
@@ -1608,7 +1692,7 @@ class PollPowerAPIRouter extends OpenApiServerRouterBase {
       (OpenApiRequest request) async {
         return await impl.invoke(
           request,
-          (PollPowerAPIContract impl) async => impl.voteCandidate(
+          (Pollpower impl) async => impl.voteCandidate(
               VotingRequest.fromJson(await request.readJsonBody())),
         );
       },
@@ -1627,10 +1711,17 @@ class PollPowerAPIRouter extends OpenApiServerRouterBase {
       (OpenApiRequest request) async {
         return await impl.invoke(
           request,
-          (PollPowerAPIContract impl) async => impl.subscribe(),
+          (Pollpower impl) async => impl.subscribe(),
         );
       },
-      security: [],
+      security: [
+        SecurityRequirement(schemes: [
+          SecurityRequirementScheme(
+            scheme: SecuritySchemes.jwt,
+            scopes: [],
+          )
+        ])
+      ],
     );
     addRoute(
       '/v1/auth/signup/user',
@@ -1638,11 +1729,18 @@ class PollPowerAPIRouter extends OpenApiServerRouterBase {
       (OpenApiRequest request) async {
         return await impl.invoke(
           request,
-          (PollPowerAPIContract impl) async =>
+          (Pollpower impl) async =>
               impl.signUpUser(User.fromJson(await request.readJsonBody())),
         );
       },
-      security: [],
+      security: [
+        SecurityRequirement(schemes: [
+          SecurityRequirementScheme(
+            scheme: SecuritySchemes.jwt,
+            scopes: [],
+          )
+        ])
+      ],
     );
     addRoute(
       '/v1/auth/signup/candidate',
@@ -1650,11 +1748,18 @@ class PollPowerAPIRouter extends OpenApiServerRouterBase {
       (OpenApiRequest request) async {
         return await impl.invoke(
           request,
-          (PollPowerAPIContract impl) async => impl.signUpCandidate(
+          (Pollpower impl) async => impl.signUpCandidate(
               Candidate.fromJson(await request.readJsonBody())),
         );
       },
-      security: [],
+      security: [
+        SecurityRequirement(schemes: [
+          SecurityRequirementScheme(
+            scheme: SecuritySchemes.jwt,
+            scopes: [],
+          )
+        ])
+      ],
     );
   }
 }

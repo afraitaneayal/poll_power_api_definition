@@ -341,6 +341,9 @@ components:
             scheme: bearer
             type: http
             description: Json Web Token base security
+security:
+    -
+        JWT: []            
 tags:
     -
         name: v1
