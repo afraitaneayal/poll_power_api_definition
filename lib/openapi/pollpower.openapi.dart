@@ -483,7 +483,7 @@ class GetCandidatesResponse200 extends GetCandidatesResponse
   @override
   final int status;
 
-  final List<User> body;
+  final List<Candidate> body;
 
   @override
   final Map<String, dynamic> bodyJson;
@@ -586,11 +586,11 @@ class GetCandidatesResponse500 extends GetCandidatesResponse
 }
 
 sealed class GetCandidatesResponse extends OpenApiResponse
-    implements HasSuccessResponse<List<User>> {
+    implements HasSuccessResponse<List<Candidate>> {
   GetCandidatesResponse();
 
   /// Successfuly got candidates
-  factory GetCandidatesResponse.response200(List<User> body) =>
+  factory GetCandidatesResponse.response200(List<Candidate> body) =>
       GetCandidatesResponse200.response200(body);
 
   /// Bad request
@@ -629,7 +629,7 @@ sealed class GetCandidatesResponse extends OpenApiResponse
 
   /// status 200:  Successfuly got candidates
   @override
-  List<User> requireSuccess() {
+  List<Candidate> requireSuccess() {
     if (this is GetCandidatesResponse200) {
       return (this as GetCandidatesResponse200).body;
     } else {
@@ -1321,10 +1321,11 @@ class _PollPowerAPIClientImpl extends OpenApiClientBase
       request,
       {
         '200': (OpenApiClientResponse response) async =>
-            GetCandidatesResponse200.response200((await response
-                    .responseBodyJsonDynamic() as List<dynamic>)
-                .map((item) => User.fromJson((item as Map<String, dynamic>)))
-                .toList()),
+            GetCandidatesResponse200.response200(
+                (await response.responseBodyJsonDynamic() as List<dynamic>)
+                    .map((item) =>
+                        Candidate.fromJson((item as Map<String, dynamic>)))
+                    .toList()),
         '400': (OpenApiClientResponse response) async =>
             GetCandidatesResponse400.response400(
                 APIError.fromJson(await response.responseBodyJson())),
