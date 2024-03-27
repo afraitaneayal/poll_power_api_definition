@@ -82,12 +82,12 @@ Map<String, dynamic> _$UserLoginRequestToJson(UserLoginRequest instance) {
   return val;
 }
 
-ErrorError _$ErrorErrorFromJson(Map<String, dynamic> json) => ErrorError(
+APIError _$APIErrorFromJson(Map<String, dynamic> json) => APIError(
       devMessage: json['devMessage'] as String?,
       userFriendlyMessage: json['userFriendlyMessage'] as String?,
     );
 
-Map<String, dynamic> _$ErrorErrorToJson(ErrorError instance) {
+Map<String, dynamic> _$APIErrorToJson(APIError instance) {
   final val = <String, dynamic>{};
 
   void writeNotNull(String key, dynamic value) {
@@ -104,7 +104,7 @@ Map<String, dynamic> _$ErrorErrorToJson(ErrorError instance) {
 Error _$ErrorFromJson(Map<String, dynamic> json) => Error(
       error: json['error'] == null
           ? null
-          : ErrorError.fromJson(json['error'] as Map<String, dynamic>),
+          : APIError.fromJson(json['error'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$ErrorToJson(Error instance) {

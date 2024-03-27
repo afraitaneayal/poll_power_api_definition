@@ -158,14 +158,14 @@ class UserLoginRequest implements OpenApiContent {
 
 @JsonSerializable()
 @ApiUuidJsonConverter()
-class ErrorError implements OpenApiContent {
-  ErrorError({
+class APIError implements OpenApiContent {
+  APIError({
     this.devMessage,
     this.userFriendlyMessage,
   });
 
-  factory ErrorError.fromJson(Map<String, dynamic> jsonMap) =>
-      _$ErrorErrorFromJson(jsonMap);
+  factory APIError.fromJson(Map<String, dynamic> jsonMap) =>
+      _$APIErrorFromJson(jsonMap);
 
   @JsonKey(
     name: 'devMessage',
@@ -179,7 +179,7 @@ class ErrorError implements OpenApiContent {
   )
   final String? userFriendlyMessage;
 
-  Map<String, dynamic> toJson() => _$ErrorErrorToJson(this);
+  Map<String, dynamic> toJson() => _$APIErrorToJson(this);
 
   @override
   String toString() => toJson().toString();
@@ -198,7 +198,7 @@ class Error implements OpenApiContent {
     name: 'error',
     includeIfNull: false,
   )
-  final ErrorError? error;
+  final APIError? error;
 
   Map<String, dynamic> toJson() => _$ErrorToJson(this);
 
