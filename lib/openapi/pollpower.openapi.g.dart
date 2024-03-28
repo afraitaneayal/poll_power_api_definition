@@ -134,9 +134,9 @@ Map<String, dynamic> _$JWTresponseToJson(JWTresponse instance) =>
 
 VotingRequest _$VotingRequestFromJson(Map<String, dynamic> json) =>
     VotingRequest(
-      candidateId: json['candidate_id'] as String?,
-      votedAt: json['voted_at'] as String?,
-      userId: json['user_id'] as String?,
+      candidateId: json['candidate_id'] as String,
+      votedAt: json['voted_at'] as String,
+      userId: json['user_id'] as String,
     );
 
 Map<String, dynamic> _$VotingRequestToJson(VotingRequest instance) {
