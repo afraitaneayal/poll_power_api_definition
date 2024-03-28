@@ -318,14 +318,11 @@ components:
             type: object
             properties:
                 candidate_id:
-                    type: string
-                voted_at:
-                    type: string
+                    type: string          
                 user_id:
                     type: string             
             example:
                 candidate_id: ''
-                voted_at: ''
                 user_id: ''
     securitySchemes:
         JWT:

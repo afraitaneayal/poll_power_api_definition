@@ -242,7 +242,6 @@ class JWTresponse implements OpenApiContent {
 class VotingRequest implements OpenApiContent {
   VotingRequest({
     required this.candidateId,
-    this.votedAt,
     required this.userId,
   });
 
@@ -254,12 +253,6 @@ class VotingRequest implements OpenApiContent {
     includeIfNull: false,
   )
   final String candidateId;
-
-  @JsonKey(
-    name: 'voted_at',
-    includeIfNull: false,
-  )
-  final String? votedAt;
 
   @JsonKey(
     name: 'user_id',

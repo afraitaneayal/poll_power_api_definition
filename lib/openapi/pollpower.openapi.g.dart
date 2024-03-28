@@ -135,7 +135,6 @@ Map<String, dynamic> _$JWTresponseToJson(JWTresponse instance) =>
 VotingRequest _$VotingRequestFromJson(Map<String, dynamic> json) =>
     VotingRequest(
       candidateId: json['candidate_id'] as String,
-      votedAt: json['voted_at'] as String,
       userId: json['user_id'] as String,
     );
 
@@ -149,7 +148,6 @@ Map<String, dynamic> _$VotingRequestToJson(VotingRequest instance) {
   }
 
   writeNotNull('candidate_id', instance.candidateId);
-  writeNotNull('voted_at', instance.votedAt);
   writeNotNull('user_id', instance.userId);
   return val;
 }
