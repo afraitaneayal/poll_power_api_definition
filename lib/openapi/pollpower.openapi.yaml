@@ -314,9 +314,7 @@ components:
                 refresh_token: ''
         VotingRequest:
             title: Root Type for VotingRequest
-            description: ''
-            required:
-                - id
+            description: ''            
             type: object
             properties:
                 candidate_id:
@@ -324,10 +322,7 @@ components:
                 voted_at:
                     type: string
                 user_id:
-                    type: string
-                id:
-                    description: ''
-                    type: string
+                    type: string             
             example:
                 candidate_id: ''
                 voted_at: ''

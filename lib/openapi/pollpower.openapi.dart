@@ -244,7 +244,6 @@ class VotingRequest implements OpenApiContent {
     this.candidateId,
     this.votedAt,
     this.userId,
-    required this.id,
   });
 
   factory VotingRequest.fromJson(Map<String, dynamic> jsonMap) =>
@@ -267,13 +266,6 @@ class VotingRequest implements OpenApiContent {
     includeIfNull: false,
   )
   final String? userId;
-
-  ///
-  @JsonKey(
-    name: 'id',
-    includeIfNull: false,
-  )
-  final String id;
 
   Map<String, dynamic> toJson() => _$VotingRequestToJson(this);
 
