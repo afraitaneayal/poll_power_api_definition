@@ -80,7 +80,6 @@ class Candidate implements OpenApiContent {
     required this.slogan,
     this.speech,
     required this.voteCount,
-    required this.id,
     required this.user,
   });
 
@@ -105,13 +104,6 @@ class Candidate implements OpenApiContent {
     includeIfNull: false,
   )
   final int voteCount;
-
-  ///
-  @JsonKey(
-    name: 'id',
-    includeIfNull: false,
-  )
-  final String id;
 
   ///
   @JsonKey(

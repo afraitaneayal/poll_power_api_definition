@@ -249,7 +249,6 @@ components:
             required:
                 - slogan
                 - vote_count
-                - id
                 - user
             type: object
             properties:
@@ -259,10 +258,7 @@ components:
                     type: string
                 vote_count:
                     description: Candidate vote count
-                    type: integer
-                id:
-                    description: ''
-                    type: string
+                    type: integer               
                 user:
                     $ref: '#/components/schemas/User'
                     description: ''
