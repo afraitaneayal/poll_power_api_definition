@@ -242,7 +242,6 @@ class JWTresponse implements OpenApiContent {
 class VotingRequest implements OpenApiContent {
   VotingRequest({
     required this.candidateId,
-    required this.userId,
   });
 
   factory VotingRequest.fromJson(Map<String, dynamic> jsonMap) =>
@@ -253,12 +252,6 @@ class VotingRequest implements OpenApiContent {
     includeIfNull: false,
   )
   final String candidateId;
-
-  @JsonKey(
-    name: 'user_id',
-    includeIfNull: false,
-  )
-  final String userId;
 
   Map<String, dynamic> toJson() => _$VotingRequestToJson(this);
 

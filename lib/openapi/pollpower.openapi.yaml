@@ -318,12 +318,9 @@ components:
             type: object
             properties:
                 candidate_id:
-                    type: string          
-                user_id:
-                    type: string             
+                    type: string                              
             example:
                 candidate_id: ''
-                user_id: ''
     securitySchemes:
         JWT:
             scheme: bearer
