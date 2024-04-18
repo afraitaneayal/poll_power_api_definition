@@ -101,13 +101,13 @@ Map<String, dynamic> _$ErrorErrorToJson(ErrorError instance) {
   return val;
 }
 
-Error _$ErrorFromJson(Map<String, dynamic> json) => Error(
+APIError _$ErrorFromJson(Map<String, dynamic> json) => APIError(
       error: json['error'] == null
           ? null
-          : ErrorError.fromJson(json['error'] as Map<String, dynamic>),
+          : APIError.fromJson(json['error'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$ErrorToJson(Error instance) {
+Map<String, dynamic> _$ErrorToJson(APIError instance) {
   final val = <String, dynamic>{};
 
   void writeNotNull(String key, dynamic value) {
