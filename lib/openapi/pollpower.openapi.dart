@@ -197,7 +197,7 @@ class APIError implements OpenApiContent {
     name: 'error',
     includeIfNull: false,
   )
-  final APIError? error;
+  final APIErrorContent? error;
 
   Map<String, dynamic> toJson() => _$ErrorToJson(this);
 

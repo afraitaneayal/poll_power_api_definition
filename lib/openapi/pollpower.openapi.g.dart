@@ -105,7 +105,7 @@ Map<String, dynamic> _$ErrorErrorToJson(APIErrorContent instance) {
 APIError _$ErrorFromJson(Map<String, dynamic> json) => APIError(
       error: json['error'] == null
           ? null
-          : APIError.fromJson(json['error'] as Map<String, dynamic>),
+          : APIErrorContent.fromJson(json['error'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$ErrorToJson(APIError instance) {
