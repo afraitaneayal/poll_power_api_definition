@@ -272,10 +272,13 @@ components:
             properties:
                 email:
                     type: string
+                appKey:
+                    type: string
                 password:
                     type: string
             example:
-                email: ''
+                email: '' 
+                appKey: ''
                 password: ''
         Error:
             title: Root Type for Error

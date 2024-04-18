@@ -124,6 +124,7 @@ class Candidate implements OpenApiContent {
 class UserLoginRequest implements OpenApiContent {
   UserLoginRequest({
     this.email,
+    this.appKey,
     this.password,
   });
 
@@ -135,6 +136,12 @@ class UserLoginRequest implements OpenApiContent {
     includeIfNull: false,
   )
   final String? email;
+
+  @JsonKey(
+    name: 'appKey',
+    includeIfNull: false,
+  )
+  final String? appKey;
 
   @JsonKey(
     name: 'password',
@@ -150,14 +157,14 @@ class UserLoginRequest implements OpenApiContent {
 
 @JsonSerializable()
 @ApiUuidJsonConverter()
-class APIErrorContent implements OpenApiContent {
-  APIErrorContent({
+class ErrorError implements OpenApiContent {
+  ErrorError({
     this.devMessage,
     this.userFriendlyMessage,
   });
 
-  factory APIErrorContent.fromJson(Map<String, dynamic> jsonMap) =>
-      _$APIErrorContentFromJson(jsonMap);
+  factory ErrorError.fromJson(Map<String, dynamic> jsonMap) =>
+      _$ErrorErrorFromJson(jsonMap);
 
   @JsonKey(
     name: 'devMessage',
@@ -171,7 +178,7 @@ class APIErrorContent implements OpenApiContent {
   )
   final String? userFriendlyMessage;
 
-  Map<String, dynamic> toJson() => _$APIErrorContentToJson(this);
+  Map<String, dynamic> toJson() => _$ErrorErrorToJson(this);
 
   @override
   String toString() => toJson().toString();
@@ -180,19 +187,19 @@ class APIErrorContent implements OpenApiContent {
 /// Base error response
 @JsonSerializable()
 @ApiUuidJsonConverter()
-class APIError implements OpenApiContent {
-  APIError({this.error});
+class Error implements OpenApiContent {
+  Error({this.error});
 
-  factory APIError.fromJson(Map<String, dynamic> jsonMap) =>
-      _$APIErrorFromJson(jsonMap);
+  factory Error.fromJson(Map<String, dynamic> jsonMap) =>
+      _$ErrorFromJson(jsonMap);
 
   @JsonKey(
     name: 'error',
     includeIfNull: false,
   )
-  final APIErrorContent? error;
+  final ErrorError? error;
 
-  Map<String, dynamic> toJson() => _$APIErrorToJson(this);
+  Map<String, dynamic> toJson() => _$ErrorToJson(this);
 
   @override
   String toString() => toJson().toString();
@@ -240,9 +247,7 @@ class JWTresponse implements OpenApiContent {
 @JsonSerializable()
 @ApiUuidJsonConverter()
 class VotingRequest implements OpenApiContent {
-  VotingRequest({
-    required this.candidateId,
-  });
+  VotingRequest({this.candidateId});
 
   factory VotingRequest.fromJson(Map<String, dynamic> jsonMap) =>
       _$VotingRequestFromJson(jsonMap);
@@ -251,7 +256,7 @@ class VotingRequest implements OpenApiContent {
     name: 'candidate_id',
     includeIfNull: false,
   )
-  final String candidateId;
+  final String? candidateId;
 
   Map<String, dynamic> toJson() => _$VotingRequestToJson(this);
 
@@ -351,7 +356,7 @@ class LoginUserResponse400 extends LoginUserResponse
   @override
   final int status;
 
-  final APIError body;
+  final Error body;
 
   @override
   final Map<String, dynamic> bodyJson;
@@ -379,7 +384,7 @@ class LoginUserResponse500 extends LoginUserResponse
   @override
   final int status;
 
-  final APIError body;
+  final Error body;
 
   @override
   final Map<String, dynamic> bodyJson;
@@ -406,11 +411,11 @@ sealed class LoginUserResponse extends OpenApiResponse
       LoginUserResponse200.response200(body);
 
   /// User send bad request like v1/auth/login with get methode
-  factory LoginUserResponse.response400(APIError body) =>
+  factory LoginUserResponse.response400(Error body) =>
       LoginUserResponse400.response400(body);
 
   /// Internal server error
-  factory LoginUserResponse.response500(APIError body) =>
+  factory LoginUserResponse.response500(Error body) =>
       LoginUserResponse500.response500(body);
 
   R map<R>({
@@ -453,7 +458,7 @@ class GetCandidatesResponse200 extends GetCandidatesResponse
   @override
   final int status;
 
-  final List<Candidate> body;
+  final List<User> body;
 
   @override
   final Map<String, dynamic> bodyJson;
@@ -481,7 +486,7 @@ class GetCandidatesResponse400 extends GetCandidatesResponse
   @override
   final int status;
 
-  final APIError body;
+  final Error body;
 
   @override
   final Map<String, dynamic> bodyJson;
@@ -509,7 +514,7 @@ class GetCandidatesResponse401 extends GetCandidatesResponse
   @override
   final int status;
 
-  final APIError body;
+  final Error body;
 
   @override
   final Map<String, dynamic> bodyJson;
@@ -537,7 +542,7 @@ class GetCandidatesResponse500 extends GetCandidatesResponse
   @override
   final int status;
 
-  final APIError body;
+  final Error body;
 
   @override
   final Map<String, dynamic> bodyJson;
@@ -556,23 +561,23 @@ class GetCandidatesResponse500 extends GetCandidatesResponse
 }
 
 sealed class GetCandidatesResponse extends OpenApiResponse
-    implements HasSuccessResponse<List<Candidate>> {
+    implements HasSuccessResponse<List<User>> {
   GetCandidatesResponse();
 
   /// Successfuly got candidates
-  factory GetCandidatesResponse.response200(List<Candidate> body) =>
+  factory GetCandidatesResponse.response200(List<User> body) =>
       GetCandidatesResponse200.response200(body);
 
   /// Bad request
-  factory GetCandidatesResponse.response400(APIError body) =>
+  factory GetCandidatesResponse.response400(Error body) =>
       GetCandidatesResponse400.response400(body);
 
   /// Unauthorized user
-  factory GetCandidatesResponse.response401(APIError body) =>
+  factory GetCandidatesResponse.response401(Error body) =>
       GetCandidatesResponse401.response401(body);
 
   /// Internal server error
-  factory GetCandidatesResponse.response500(APIError body) =>
+  factory GetCandidatesResponse.response500(Error body) =>
       GetCandidatesResponse500.response500(body);
 
   R map<R>({
@@ -599,7 +604,7 @@ sealed class GetCandidatesResponse extends OpenApiResponse
 
   /// status 200:  Successfuly got candidates
   @override
-  List<Candidate> requireSuccess() {
+  List<User> requireSuccess() {
     if (this is GetCandidatesResponse200) {
       return (this as GetCandidatesResponse200).body;
     } else {
@@ -635,7 +640,7 @@ class VoteCandidateResponse400 extends VoteCandidateResponse
   @override
   final int status;
 
-  final APIError body;
+  final Error body;
 
   @override
   final Map<String, dynamic> bodyJson;
@@ -663,7 +668,7 @@ class VoteCandidateResponse401 extends VoteCandidateResponse
   @override
   final int status;
 
-  final APIError body;
+  final Error body;
 
   @override
   final Map<String, dynamic> bodyJson;
@@ -691,7 +696,7 @@ class VoteCandidateResponse404 extends VoteCandidateResponse
   @override
   final int status;
 
-  final APIError body;
+  final Error body;
 
   @override
   final Map<String, dynamic> bodyJson;
@@ -719,7 +724,7 @@ class VoteCandidateResponse500 extends VoteCandidateResponse
   @override
   final int status;
 
-  final APIError body;
+  final Error body;
 
   @override
   final Map<String, dynamic> bodyJson;
@@ -746,19 +751,19 @@ sealed class VoteCandidateResponse extends OpenApiResponse
       VoteCandidateResponse200.response200();
 
   /// Bad request
-  factory VoteCandidateResponse.response400(APIError body) =>
+  factory VoteCandidateResponse.response400(Error body) =>
       VoteCandidateResponse400.response400(body);
 
   /// Unauthorized user
-  factory VoteCandidateResponse.response401(APIError body) =>
+  factory VoteCandidateResponse.response401(Error body) =>
       VoteCandidateResponse401.response401(body);
 
   /// Candidate not found
-  factory VoteCandidateResponse.response404(APIError body) =>
+  factory VoteCandidateResponse.response404(Error body) =>
       VoteCandidateResponse404.response404(body);
 
   /// Internal server error
-  factory VoteCandidateResponse.response500(APIError body) =>
+  factory VoteCandidateResponse.response500(Error body) =>
       VoteCandidateResponse500.response500(body);
 
   R map<R>({
@@ -883,7 +888,7 @@ class SignUpUserResponse400 extends SignUpUserResponse
   @override
   final int status;
 
-  final APIError body;
+  final Error body;
 
   @override
   final Map<String, dynamic> bodyJson;
@@ -911,7 +916,7 @@ class SignUpUserResponse500 extends SignUpUserResponse
   @override
   final int status;
 
-  final APIError body;
+  final Error body;
 
   @override
   final Map<String, dynamic> bodyJson;
@@ -938,11 +943,11 @@ sealed class SignUpUserResponse extends OpenApiResponse
       SignUpUserResponse201.response201(body);
 
   /// Bad request
-  factory SignUpUserResponse.response400(APIError body) =>
+  factory SignUpUserResponse.response400(Error body) =>
       SignUpUserResponse400.response400(body);
 
   /// Internal server error
-  factory SignUpUserResponse.response500(APIError body) =>
+  factory SignUpUserResponse.response500(Error body) =>
       SignUpUserResponse500.response500(body);
 
   R map<R>({
@@ -1013,7 +1018,7 @@ class SignUpCandidateResponse400 extends SignUpCandidateResponse
   @override
   final int status;
 
-  final APIError body;
+  final Error body;
 
   @override
   final Map<String, dynamic> bodyJson;
@@ -1041,7 +1046,7 @@ class SignUpCandidateResponse500 extends SignUpCandidateResponse
   @override
   final int status;
 
-  final APIError body;
+  final Error body;
 
   @override
   final Map<String, dynamic> bodyJson;
@@ -1068,11 +1073,11 @@ sealed class SignUpCandidateResponse extends OpenApiResponse
       SignUpCandidateResponse201.response201(body);
 
   /// Bad request
-  factory SignUpCandidateResponse.response400(APIError body) =>
+  factory SignUpCandidateResponse.response400(Error body) =>
       SignUpCandidateResponse400.response400(body);
 
   /// Internal server error
-  factory SignUpCandidateResponse.response500(APIError body) =>
+  factory SignUpCandidateResponse.response500(Error body) =>
       SignUpCandidateResponse500.response500(body);
 
   R map<R>({
@@ -1262,10 +1267,10 @@ class _PollPowerAPIClientImpl extends OpenApiClientBase
                 JWTresponse.fromJson(await response.responseBodyJson())),
         '400': (OpenApiClientResponse response) async =>
             LoginUserResponse400.response400(
-                APIError.fromJson(await response.responseBodyJson())),
+                Error.fromJson(await response.responseBodyJson())),
         '500': (OpenApiClientResponse response) async =>
             LoginUserResponse500.response500(
-                APIError.fromJson(await response.responseBodyJson())),
+                Error.fromJson(await response.responseBodyJson())),
       },
     );
   }
@@ -1291,20 +1296,19 @@ class _PollPowerAPIClientImpl extends OpenApiClientBase
       request,
       {
         '200': (OpenApiClientResponse response) async =>
-            GetCandidatesResponse200.response200(
-                (await response.responseBodyJsonDynamic() as List<dynamic>)
-                    .map((item) =>
-                        Candidate.fromJson((item as Map<String, dynamic>)))
-                    .toList()),
+            GetCandidatesResponse200.response200((await response
+                    .responseBodyJsonDynamic() as List<dynamic>)
+                .map((item) => User.fromJson((item as Map<String, dynamic>)))
+                .toList()),
         '400': (OpenApiClientResponse response) async =>
             GetCandidatesResponse400.response400(
-                APIError.fromJson(await response.responseBodyJson())),
+                Error.fromJson(await response.responseBodyJson())),
         '401': (OpenApiClientResponse response) async =>
             GetCandidatesResponse401.response401(
-                APIError.fromJson(await response.responseBodyJson())),
+                Error.fromJson(await response.responseBodyJson())),
         '500': (OpenApiClientResponse response) async =>
             GetCandidatesResponse500.response500(
-                APIError.fromJson(await response.responseBodyJson())),
+                Error.fromJson(await response.responseBodyJson())),
       },
     );
   }
@@ -1339,16 +1343,16 @@ class _PollPowerAPIClientImpl extends OpenApiClientBase
             VoteCandidateResponse200.response200(),
         '400': (OpenApiClientResponse response) async =>
             VoteCandidateResponse400.response400(
-                APIError.fromJson(await response.responseBodyJson())),
+                Error.fromJson(await response.responseBodyJson())),
         '401': (OpenApiClientResponse response) async =>
             VoteCandidateResponse401.response401(
-                APIError.fromJson(await response.responseBodyJson())),
+                Error.fromJson(await response.responseBodyJson())),
         '404': (OpenApiClientResponse response) async =>
             VoteCandidateResponse404.response404(
-                APIError.fromJson(await response.responseBodyJson())),
+                Error.fromJson(await response.responseBodyJson())),
         '500': (OpenApiClientResponse response) async =>
             VoteCandidateResponse500.response500(
-                APIError.fromJson(await response.responseBodyJson())),
+                Error.fromJson(await response.responseBodyJson())),
       },
     );
   }
@@ -1410,10 +1414,10 @@ class _PollPowerAPIClientImpl extends OpenApiClientBase
                 User.fromJson(await response.responseBodyJson())),
         '400': (OpenApiClientResponse response) async =>
             SignUpUserResponse400.response400(
-                APIError.fromJson(await response.responseBodyJson())),
+                Error.fromJson(await response.responseBodyJson())),
         '500': (OpenApiClientResponse response) async =>
             SignUpUserResponse500.response500(
-                APIError.fromJson(await response.responseBodyJson())),
+                Error.fromJson(await response.responseBodyJson())),
       },
     );
   }
@@ -1450,10 +1454,10 @@ class _PollPowerAPIClientImpl extends OpenApiClientBase
                 Candidate.fromJson(await response.responseBodyJson())),
         '400': (OpenApiClientResponse response) async =>
             SignUpCandidateResponse400.response400(
-                APIError.fromJson(await response.responseBodyJson())),
+                Error.fromJson(await response.responseBodyJson())),
         '500': (OpenApiClientResponse response) async =>
             SignUpCandidateResponse500.response500(
-                APIError.fromJson(await response.responseBodyJson())),
+                Error.fromJson(await response.responseBodyJson())),
       },
     );
   }
