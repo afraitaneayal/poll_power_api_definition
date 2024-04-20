@@ -125,6 +125,7 @@ class UserLoginRequest implements OpenApiContent {
   UserLoginRequest({
     this.email,
     this.password,
+    this.appKey,
   });
 
   factory UserLoginRequest.fromJson(Map<String, dynamic> jsonMap) =>
@@ -135,6 +136,12 @@ class UserLoginRequest implements OpenApiContent {
     includeIfNull: false,
   )
   final String? email;
+
+  @JsonKey(
+    name: 'appKey',
+    includeIfNull: false,
+  )
+  final String? appKey;
 
   @JsonKey(
     name: 'password',
