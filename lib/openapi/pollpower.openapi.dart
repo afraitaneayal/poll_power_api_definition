@@ -1374,12 +1374,12 @@ abstract class PollPowerAPIContract implements ApiEndpoint {
   Future<GetUserResponse> getUser();
 }
 
-abstract class PollpowerClient implements OpenApiClient {
-  factory PollpowerClient(
+abstract class PollPowerAPIClient implements OpenApiClient {
+  factory PollPowerAPIClient(
     Uri baseUri,
     OpenApiRequestSender requestSender,
   ) =>
-      _PollpowerClientImpl._(
+      _PollPowerAPIClientImpl._(
         baseUri,
         requestSender,
       );
@@ -1429,9 +1429,9 @@ abstract class PollpowerClient implements OpenApiClient {
   Future<GetUserResponse> getUser();
 }
 
-class _PollpowerClientImpl extends OpenApiClientBase
-    implements PollpowerClient {
-  _PollpowerClientImpl._(
+class _PollPowerAPIClientImpl extends OpenApiClientBase
+    implements PollPowerAPIClient {
+  _PollPowerAPIClientImpl._(
     this.baseUri,
     this.requestSender,
   );
