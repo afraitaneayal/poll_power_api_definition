@@ -50,13 +50,13 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Error'
+                                $ref: '#/components/schemas/APIError'
                     description: User send bad request like v1/auth/login with get methode
                 '500':
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Error'
+                                $ref: '#/components/schemas/APIError'
                     description: Internal server error
             operationId: LoginUser
             summary: Post methode for loggin
@@ -71,25 +71,25 @@ paths:
                             schema:
                                 type: array
                                 items:
-                                    $ref: '#/components/schemas/User'
+                                    $ref: '#/components/schemas/Candidate'
                     description: Successfuly got candidates
                 '400':
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Error'
+                                $ref: '#/components/schemas/APIError'
                     description: Bad request
                 '401':
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Error'
+                                $ref: '#/components/schemas/APIError'
                     description: Unauthorized user
                 '500':
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Error'
+                                $ref: '#/components/schemas/APIError'
                     description: Internal server error
             security:
                 -
@@ -113,25 +113,25 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Error'
+                                $ref: '#/components/schemas/APIError'
                     description: Bad request
                 '401':
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Error'
+                                $ref: '#/components/schemas/APIError'
                     description: Unauthorized user
                 '404':
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Error'
+                                $ref: '#/components/schemas/APIError'
                     description: Candidate not found
                 '500':
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Error'
+                                $ref: '#/components/schemas/APIError'
                     description: Internal server error
             security:
                 -
@@ -164,13 +164,13 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Error'
+                                $ref: '#/components/schemas/APIError'
                     description: Bad request
                 '500':
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Error'
+                                $ref: '#/components/schemas/APIError'
                     description: Internal server error
             operationId: SignUpUser
             summary: Post method to create new user
@@ -195,17 +195,55 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Error'
+                                $ref: '#/components/schemas/APIError'
                     description: Bad request
                 '500':
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Error'
+                                $ref: '#/components/schemas/APIError'
                     description: Internal server error
             operationId: SignUpCandidate
             summary: Post method to create new candidate
             description: Post method to create new user and return their access
+    /v1/users:
+        get:
+            responses:
+                '200':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/User'
+                    description: Succefuly got user
+                '400':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/APIError'
+                    description: Bad request
+                '401':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/APIError'
+                    description: |
+                        Unauthorized
+                '404':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/APIError'
+                    description: User not found
+                '500':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/APIError'
+                    description: Internal server error
+            security:
+                -
+                    JWT: []
+            operationId: GetUser
 components:
     schemas:
         User:
@@ -217,7 +255,7 @@ components:
                 - first_name
                 - grade
                 - last_name
-                - password                
+                - password
             type: object
             properties:
                 email:
@@ -233,7 +271,7 @@ components:
                 area_of_study:
                     type: string
                 image:
-                    type: string               
+                    type: string
             example:
                 email: ''
                 password: ''
@@ -258,7 +296,7 @@ components:
                     type: string
                 vote_count:
                     description: Candidate vote count
-                    type: integer               
+                    type: integer
                 user:
                     $ref: '#/components/schemas/User'
                     description: ''
@@ -272,30 +310,11 @@ components:
             properties:
                 email:
                     type: string
-                appKey:
-                    type: string
                 password:
                     type: string
             example:
-                email: '' 
-                appKey: ''
+                email: ''
                 password: ''
-        Error:
-            title: Root Type for Error
-            description: 'Base error response '
-            type: object
-            properties:
-                error:
-                    type: object
-                    properties:
-                        devMessage:
-                            type: string
-                        userFriendlyMessage:
-                            type: string
-            example:
-                error:
-                    devMessage: ''
-                    userFriendlyMessage: ''
         JWTresponse:
             title: Root Type for JWTresponse
             description: JWT response that contain token and refresh token
@@ -317,13 +336,40 @@ components:
                 refresh_token: ''
         VotingRequest:
             title: Root Type for VotingRequest
-            description: ''            
+            description: ''
+            required:
+                - uuid
             type: object
             properties:
                 candidate_id:
-                    type: string                              
+                    type: string
+                voted_at:
+                    type: string
+                user_id:
+                    type: string
+                uuid:
+                    description: ''
+                    type: string
             example:
                 candidate_id: ''
+                voted_at: ''
+                user_id: ''
+        APIError:
+            title: Root Type for Error
+            description: 'Base error response '
+            type: object
+            properties:
+                error:
+                    type: object
+                    properties:
+                        devMessage:
+                            type: string
+                        userFriendlyMessage:
+                            type: string
+            example:
+                error:
+                    devMessage: ''
+                    userFriendlyMessage: ''
     securitySchemes:
         JWT:
             scheme: bearer
@@ -331,7 +377,7 @@ components:
             description: Json Web Token base security
 security:
     -
-        JWT: []            
+        JWT: []
 tags:
     -
         name: v1
@@ -339,3 +385,6 @@ tags:
     -
         name: v1.2
         description: Some base HTTP method requirements fixed
+    -
+        name: v1.3
+        description: ''

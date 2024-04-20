@@ -124,7 +124,6 @@ class Candidate implements OpenApiContent {
 class UserLoginRequest implements OpenApiContent {
   UserLoginRequest({
     this.email,
-    this.appKey,
     this.password,
   });
 
@@ -138,68 +137,12 @@ class UserLoginRequest implements OpenApiContent {
   final String? email;
 
   @JsonKey(
-    name: 'appKey',
-    includeIfNull: false,
-  )
-  final String? appKey;
-
-  @JsonKey(
     name: 'password',
     includeIfNull: false,
   )
   final String? password;
 
   Map<String, dynamic> toJson() => _$UserLoginRequestToJson(this);
-
-  @override
-  String toString() => toJson().toString();
-}
-
-@JsonSerializable()
-@ApiUuidJsonConverter()
-class APIErrorContent implements OpenApiContent {
-  APIErrorContent({
-    this.devMessage,
-    this.userFriendlyMessage,
-  });
-
-  factory APIErrorContent.fromJson(Map<String, dynamic> jsonMap) =>
-      _$ErrorErrorFromJson(jsonMap);
-
-  @JsonKey(
-    name: 'devMessage',
-    includeIfNull: false,
-  )
-  final String? devMessage;
-
-  @JsonKey(
-    name: 'userFriendlyMessage',
-    includeIfNull: false,
-  )
-  final String? userFriendlyMessage;
-
-  Map<String, dynamic> toJson() => _$ErrorErrorToJson(this);
-
-  @override
-  String toString() => toJson().toString();
-}
-
-/// Base error response
-@JsonSerializable()
-@ApiUuidJsonConverter()
-class APIError implements OpenApiContent {
-  APIError({this.error});
-
-  factory APIError.fromJson(Map<String, dynamic> jsonMap) =>
-      _$ErrorFromJson(jsonMap);
-
-  @JsonKey(
-    name: 'error',
-    includeIfNull: false,
-  )
-  final APIErrorContent? error;
-
-  Map<String, dynamic> toJson() => _$ErrorToJson(this);
 
   @override
   String toString() => toJson().toString();
@@ -247,7 +190,12 @@ class JWTresponse implements OpenApiContent {
 @JsonSerializable()
 @ApiUuidJsonConverter()
 class VotingRequest implements OpenApiContent {
-  VotingRequest({this.candidateId});
+  VotingRequest({
+    this.candidateId,
+    this.votedAt,
+    this.userId,
+    required this.uuid,
+  });
 
   factory VotingRequest.fromJson(Map<String, dynamic> jsonMap) =>
       _$VotingRequestFromJson(jsonMap);
@@ -258,7 +206,76 @@ class VotingRequest implements OpenApiContent {
   )
   final String? candidateId;
 
+  @JsonKey(
+    name: 'voted_at',
+    includeIfNull: false,
+  )
+  final String? votedAt;
+
+  @JsonKey(
+    name: 'user_id',
+    includeIfNull: false,
+  )
+  final String? userId;
+
+  ///
+  @JsonKey(
+    name: 'uuid',
+    includeIfNull: false,
+  )
+  final String uuid;
+
   Map<String, dynamic> toJson() => _$VotingRequestToJson(this);
+
+  @override
+  String toString() => toJson().toString();
+}
+
+@JsonSerializable()
+@ApiUuidJsonConverter()
+class APIErrorContent implements OpenApiContent {
+  APIErrorContent({
+    this.devMessage,
+    this.userFriendlyMessage,
+  });
+
+  factory APIErrorContent.fromJson(Map<String, dynamic> jsonMap) =>
+      _$APIErrorContentFromJson(jsonMap);
+
+  @JsonKey(
+    name: 'devMessage',
+    includeIfNull: false,
+  )
+  final String? devMessage;
+
+  @JsonKey(
+    name: 'userFriendlyMessage',
+    includeIfNull: false,
+  )
+  final String? userFriendlyMessage;
+
+  Map<String, dynamic> toJson() => _$APIErrorContentToJson(this);
+
+  @override
+  String toString() => toJson().toString();
+}
+
+/// Base error response
+@JsonSerializable()
+@ApiUuidJsonConverter()
+class APIError implements OpenApiContent {
+  APIError({this.error});
+
+  factory APIError.fromJson(Map<String, dynamic> jsonMap) =>
+      _$APIErrorFromJson(jsonMap);
+
+  @JsonKey(
+    name: 'error',
+    includeIfNull: false,
+  )
+  final APIErrorContent? error;
+
+  Map<String, dynamic> toJson() => _$APIErrorToJson(this);
 
   @override
   String toString() => toJson().toString();
@@ -1110,6 +1127,208 @@ sealed class SignUpCandidateResponse extends OpenApiResponse
   }
 }
 
+class GetUserResponse200 extends GetUserResponse
+    implements OpenApiResponseBodyJson {
+  /// Succefuly got user
+  GetUserResponse200.response200(this.body)
+      : status = 200,
+        bodyJson = body.toJson();
+
+  @override
+  final int status;
+
+  final User body;
+
+  @override
+  final Map<String, dynamic> bodyJson;
+
+  @override
+  final OpenApiContentType contentType =
+      OpenApiContentType.parse('application/json');
+
+  @override
+  Map<String, Object?> propertiesToString() => {
+        'status': status,
+        'body': body,
+        'bodyJson': bodyJson,
+        'contentType': contentType,
+      };
+}
+
+class GetUserResponse400 extends GetUserResponse
+    implements OpenApiResponseBodyJson {
+  /// Bad request
+  GetUserResponse400.response400(this.body)
+      : status = 400,
+        bodyJson = body.toJson();
+
+  @override
+  final int status;
+
+  final APIError body;
+
+  @override
+  final Map<String, dynamic> bodyJson;
+
+  @override
+  final OpenApiContentType contentType =
+      OpenApiContentType.parse('application/json');
+
+  @override
+  Map<String, Object?> propertiesToString() => {
+        'status': status,
+        'body': body,
+        'bodyJson': bodyJson,
+        'contentType': contentType,
+      };
+}
+
+class GetUserResponse401 extends GetUserResponse
+    implements OpenApiResponseBodyJson {
+  /// Unauthorized
+
+  GetUserResponse401.response401(this.body)
+      : status = 401,
+        bodyJson = body.toJson();
+
+  @override
+  final int status;
+
+  final APIError body;
+
+  @override
+  final Map<String, dynamic> bodyJson;
+
+  @override
+  final OpenApiContentType contentType =
+      OpenApiContentType.parse('application/json');
+
+  @override
+  Map<String, Object?> propertiesToString() => {
+        'status': status,
+        'body': body,
+        'bodyJson': bodyJson,
+        'contentType': contentType,
+      };
+}
+
+class GetUserResponse404 extends GetUserResponse
+    implements OpenApiResponseBodyJson {
+  /// User not found
+  GetUserResponse404.response404(this.body)
+      : status = 404,
+        bodyJson = body.toJson();
+
+  @override
+  final int status;
+
+  final APIError body;
+
+  @override
+  final Map<String, dynamic> bodyJson;
+
+  @override
+  final OpenApiContentType contentType =
+      OpenApiContentType.parse('application/json');
+
+  @override
+  Map<String, Object?> propertiesToString() => {
+        'status': status,
+        'body': body,
+        'bodyJson': bodyJson,
+        'contentType': contentType,
+      };
+}
+
+class GetUserResponse500 extends GetUserResponse
+    implements OpenApiResponseBodyJson {
+  /// Internal server error
+  GetUserResponse500.response500(this.body)
+      : status = 500,
+        bodyJson = body.toJson();
+
+  @override
+  final int status;
+
+  final APIError body;
+
+  @override
+  final Map<String, dynamic> bodyJson;
+
+  @override
+  final OpenApiContentType contentType =
+      OpenApiContentType.parse('application/json');
+
+  @override
+  Map<String, Object?> propertiesToString() => {
+        'status': status,
+        'body': body,
+        'bodyJson': bodyJson,
+        'contentType': contentType,
+      };
+}
+
+sealed class GetUserResponse extends OpenApiResponse
+    implements HasSuccessResponse<User> {
+  GetUserResponse();
+
+  /// Succefuly got user
+  factory GetUserResponse.response200(User body) =>
+      GetUserResponse200.response200(body);
+
+  /// Bad request
+  factory GetUserResponse.response400(APIError body) =>
+      GetUserResponse400.response400(body);
+
+  /// Unauthorized
+
+  factory GetUserResponse.response401(APIError body) =>
+      GetUserResponse401.response401(body);
+
+  /// User not found
+  factory GetUserResponse.response404(APIError body) =>
+      GetUserResponse404.response404(body);
+
+  /// Internal server error
+  factory GetUserResponse.response500(APIError body) =>
+      GetUserResponse500.response500(body);
+
+  R map<R>({
+    required ResponseMap<GetUserResponse200, R> on200,
+    required ResponseMap<GetUserResponse400, R> on400,
+    required ResponseMap<GetUserResponse401, R> on401,
+    required ResponseMap<GetUserResponse404, R> on404,
+    required ResponseMap<GetUserResponse500, R> on500,
+    ResponseMap<GetUserResponse, R>? onElse,
+  }) {
+    if (this is GetUserResponse200) {
+      return on200((this as GetUserResponse200));
+    } else if (this is GetUserResponse400) {
+      return on400((this as GetUserResponse400));
+    } else if (this is GetUserResponse401) {
+      return on401((this as GetUserResponse401));
+    } else if (this is GetUserResponse404) {
+      return on404((this as GetUserResponse404));
+    } else if (this is GetUserResponse500) {
+      return on500((this as GetUserResponse500));
+    } else if (onElse != null) {
+      return onElse(this);
+    } else {
+      throw StateError('Invalid instance of type $this');
+    }
+  }
+
+  /// status 200:  Succefuly got user
+  @override
+  User requireSuccess() {
+    if (this is GetUserResponse200) {
+      return (this as GetUserResponse200).body;
+    } else {
+      throw StateError('Expected success response, but got $this');
+    }
+  }
+}
+
 abstract class PollPowerAPIContract implements ApiEndpoint {
   /// get: /v1/
   Future<GetBasePathResponse> getBasePath();
@@ -1143,14 +1362,17 @@ abstract class PollPowerAPIContract implements ApiEndpoint {
   /// post: /v1/auth/signup/candidate
   /// [body]: This is a definition for candidate in system It's contain different data betwen candidate and user as a candidate is a user first
   Future<SignUpCandidateResponse> signUpCandidate(Candidate body);
+
+  /// get: /v1/users
+  Future<GetUserResponse> getUser();
 }
 
-abstract class PollPowerAPIClient implements OpenApiClient {
-  factory PollPowerAPIClient(
+abstract class PollpowerClient implements OpenApiClient {
+  factory PollpowerClient(
     Uri baseUri,
     OpenApiRequestSender requestSender,
   ) =>
-      _PollPowerAPIClientImpl._(
+      _PollpowerClientImpl._(
         baseUri,
         requestSender,
       );
@@ -1194,11 +1416,15 @@ abstract class PollPowerAPIClient implements OpenApiClient {
   ///
   /// [body]: This is a definition for candidate in system It's contain different data betwen candidate and user as a candidate is a user first
   Future<SignUpCandidateResponse> signUpCandidate(Candidate body);
+
+  /// get: /v1/users
+  ///
+  Future<GetUserResponse> getUser();
 }
 
-class _PollPowerAPIClientImpl extends OpenApiClientBase
-    implements PollPowerAPIClient {
-  _PollPowerAPIClientImpl._(
+class _PollpowerClientImpl extends OpenApiClientBase
+    implements PollpowerClient {
+  _PollpowerClientImpl._(
     this.baseUri,
     this.requestSender,
   );
@@ -1462,9 +1688,47 @@ class _PollPowerAPIClientImpl extends OpenApiClientBase
       },
     );
   }
+
+  /// get: /v1/users
+  ///
+  @override
+  Future<GetUserResponse> getUser() async {
+    final request = OpenApiClientRequest(
+      'get',
+      '/v1/users',
+      [
+        SecurityRequirement(schemes: [
+          SecurityRequirementScheme(
+            scheme: SecuritySchemes.jwt,
+            scopes: [],
+          )
+        ])
+      ],
+    );
+    return await sendRequest(
+      request,
+      {
+        '200': (OpenApiClientResponse response) async =>
+            GetUserResponse200.response200(
+                User.fromJson(await response.responseBodyJson())),
+        '400': (OpenApiClientResponse response) async =>
+            GetUserResponse400.response400(
+                APIError.fromJson(await response.responseBodyJson())),
+        '401': (OpenApiClientResponse response) async =>
+            GetUserResponse401.response401(
+                APIError.fromJson(await response.responseBodyJson())),
+        '404': (OpenApiClientResponse response) async =>
+            GetUserResponse404.response404(
+                APIError.fromJson(await response.responseBodyJson())),
+        '500': (OpenApiClientResponse response) async =>
+            GetUserResponse500.response500(
+                APIError.fromJson(await response.responseBodyJson())),
+      },
+    );
+  }
 }
 
-class PollPowerUrlResolve with OpenApiUrlEncodeMixin {
+class PollpowerUrlResolve with OpenApiUrlEncodeMixin {
   /// get: /v1/
   ///
   OpenApiClientRequest getBasePath() {
@@ -1587,6 +1851,24 @@ class PollPowerUrlResolve with OpenApiUrlEncodeMixin {
     final request = OpenApiClientRequest(
       'post',
       '/v1/auth/signup/candidate',
+      [
+        SecurityRequirement(schemes: [
+          SecurityRequirementScheme(
+            scheme: SecuritySchemes.jwt,
+            scopes: [],
+          )
+        ])
+      ],
+    );
+    return request;
+  }
+
+  /// get: /v1/users
+  ///
+  OpenApiClientRequest getUser() {
+    final request = OpenApiClientRequest(
+      'get',
+      '/v1/users',
       [
         SecurityRequirement(schemes: [
           SecurityRequirementScheme(
@@ -1726,6 +2008,24 @@ class PollPowerAPIRouter extends OpenApiServerRouterBase {
           request,
           (PollPowerAPIContract impl) async => impl.signUpCandidate(
               Candidate.fromJson(await request.readJsonBody())),
+        );
+      },
+      security: [
+        SecurityRequirement(schemes: [
+          SecurityRequirementScheme(
+            scheme: SecuritySchemes.jwt,
+            scopes: [],
+          )
+        ])
+      ],
+    );
+    addRoute(
+      '/v1/users',
+      'get',
+      (OpenApiRequest request) async {
+        return await impl.invoke(
+          request,
+          (PollPowerAPIContract impl) async => impl.getUser(),
         );
       },
       security: [

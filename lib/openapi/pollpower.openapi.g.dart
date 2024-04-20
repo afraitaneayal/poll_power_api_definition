@@ -63,7 +63,6 @@ Map<String, dynamic> _$CandidateToJson(Candidate instance) {
 UserLoginRequest _$UserLoginRequestFromJson(Map<String, dynamic> json) =>
     UserLoginRequest(
       email: json['email'] as String?,
-      appKey: json['appKey'] as String?,
       password: json['password'] as String?,
     );
 
@@ -77,47 +76,7 @@ Map<String, dynamic> _$UserLoginRequestToJson(UserLoginRequest instance) {
   }
 
   writeNotNull('email', instance.email);
-  writeNotNull('appKey', instance.appKey);
   writeNotNull('password', instance.password);
-  return val;
-}
-
-APIErrorContent _$ErrorErrorFromJson(Map<String, dynamic> json) =>
-    APIErrorContent(
-      devMessage: json['devMessage'] as String?,
-      userFriendlyMessage: json['userFriendlyMessage'] as String?,
-    );
-
-Map<String, dynamic> _$ErrorErrorToJson(APIErrorContent instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('devMessage', instance.devMessage);
-  writeNotNull('userFriendlyMessage', instance.userFriendlyMessage);
-  return val;
-}
-
-APIError _$ErrorFromJson(Map<String, dynamic> json) => APIError(
-      error: json['error'] == null
-          ? null
-          : APIErrorContent.fromJson(json['error'] as Map<String, dynamic>),
-    );
-
-Map<String, dynamic> _$ErrorToJson(APIError instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('error', instance.error);
   return val;
 }
 
@@ -137,6 +96,9 @@ Map<String, dynamic> _$JWTresponseToJson(JWTresponse instance) =>
 VotingRequest _$VotingRequestFromJson(Map<String, dynamic> json) =>
     VotingRequest(
       candidateId: json['candidate_id'] as String?,
+      votedAt: json['voted_at'] as String?,
+      userId: json['user_id'] as String?,
+      uuid: json['uuid'] as String,
     );
 
 Map<String, dynamic> _$VotingRequestToJson(VotingRequest instance) {
@@ -149,5 +111,47 @@ Map<String, dynamic> _$VotingRequestToJson(VotingRequest instance) {
   }
 
   writeNotNull('candidate_id', instance.candidateId);
+  writeNotNull('voted_at', instance.votedAt);
+  writeNotNull('user_id', instance.userId);
+  val['uuid'] = instance.uuid;
+  return val;
+}
+
+APIErrorContent _$APIErrorContentFromJson(Map<String, dynamic> json) =>
+    APIErrorContent(
+      devMessage: json['devMessage'] as String?,
+      userFriendlyMessage: json['userFriendlyMessage'] as String?,
+    );
+
+Map<String, dynamic> _$APIErrorContentToJson(APIErrorContent instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('devMessage', instance.devMessage);
+  writeNotNull('userFriendlyMessage', instance.userFriendlyMessage);
+  return val;
+}
+
+APIError _$APIErrorFromJson(Map<String, dynamic> json) => APIError(
+      error: json['error'] == null
+          ? null
+          : APIErrorContent.fromJson(json['error'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$APIErrorToJson(APIError instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('error', instance.error);
   return val;
 }
