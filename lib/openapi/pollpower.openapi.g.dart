@@ -64,6 +64,7 @@ UserLoginRequest _$UserLoginRequestFromJson(Map<String, dynamic> json) =>
     UserLoginRequest(
       email: json['email'] as String?,
       password: json['password'] as String?,
+      appKey: json['appKey'] as String?,
     );
 
 Map<String, dynamic> _$UserLoginRequestToJson(UserLoginRequest instance) {
@@ -77,6 +78,7 @@ Map<String, dynamic> _$UserLoginRequestToJson(UserLoginRequest instance) {
 
   writeNotNull('email', instance.email);
   writeNotNull('password', instance.password);
+  writeNotNull('appKey', instance.appKey);
   return val;
 }
 
