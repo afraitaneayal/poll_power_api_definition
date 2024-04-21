@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-    title: poll_power
+    title: PollPower
     version: '1.4'
     description: >-
         This is a little school project, a voting app allowing users to choose their preferred candidate and
@@ -370,6 +370,15 @@ components:
                 error:
                     devMessage: ''
                     userFriendlyMessage: ''
+        CandidateResponse:
+            description: ''
+            type: object
+            properties:
+                candidate:
+                    description: ''
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Candidate'
     securitySchemes:
         JWT:
             scheme: bearer
@@ -386,5 +395,8 @@ tags:
         name: v1.2
         description: Some base HTTP method requirements fixed
     -
-        name: v1.3
-        description: ''
+        name: v1.4
+        description: Little improvement
+    -
+        name: v2
+        description: Major improvement to spec

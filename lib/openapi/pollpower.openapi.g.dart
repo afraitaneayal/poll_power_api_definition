@@ -64,7 +64,6 @@ UserLoginRequest _$UserLoginRequestFromJson(Map<String, dynamic> json) =>
     UserLoginRequest(
       email: json['email'] as String?,
       password: json['password'] as String?,
-      appKey: json['appKey'] as String?,
     );
 
 Map<String, dynamic> _$UserLoginRequestToJson(UserLoginRequest instance) {
@@ -78,7 +77,6 @@ Map<String, dynamic> _$UserLoginRequestToJson(UserLoginRequest instance) {
 
   writeNotNull('email', instance.email);
   writeNotNull('password', instance.password);
-  writeNotNull('appKey', instance.appKey);
   return val;
 }
 
@@ -119,13 +117,13 @@ Map<String, dynamic> _$VotingRequestToJson(VotingRequest instance) {
   return val;
 }
 
-APIErrorContent _$APIErrorContentFromJson(Map<String, dynamic> json) =>
-    APIErrorContent(
+APIErrorError _$APIErrorErrorFromJson(Map<String, dynamic> json) =>
+    APIErrorError(
       devMessage: json['devMessage'] as String?,
       userFriendlyMessage: json['userFriendlyMessage'] as String?,
     );
 
-Map<String, dynamic> _$APIErrorContentToJson(APIErrorContent instance) {
+Map<String, dynamic> _$APIErrorErrorToJson(APIErrorError instance) {
   final val = <String, dynamic>{};
 
   void writeNotNull(String key, dynamic value) {
@@ -142,7 +140,7 @@ Map<String, dynamic> _$APIErrorContentToJson(APIErrorContent instance) {
 APIError _$APIErrorFromJson(Map<String, dynamic> json) => APIError(
       error: json['error'] == null
           ? null
-          : APIErrorContent.fromJson(json['error'] as Map<String, dynamic>),
+          : APIErrorError.fromJson(json['error'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$APIErrorToJson(APIError instance) {
@@ -155,5 +153,25 @@ Map<String, dynamic> _$APIErrorToJson(APIError instance) {
   }
 
   writeNotNull('error', instance.error);
+  return val;
+}
+
+CandidateResponse _$CandidateResponseFromJson(Map<String, dynamic> json) =>
+    CandidateResponse(
+      candidate: (json['candidate'] as List<dynamic>?)
+          ?.map((e) => Candidate.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+
+Map<String, dynamic> _$CandidateResponseToJson(CandidateResponse instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('candidate', instance.candidate);
   return val;
 }
