@@ -477,7 +477,7 @@ class GetCandidatesResponse200 extends GetCandidatesResponse
   /// Successfuly got candidates
   GetCandidatesResponse200.response200(this.body)
       : status = 200,
-        bodyJson = {};
+        bodyJson = body.first.toJson();
 
   @override
   final int status;
