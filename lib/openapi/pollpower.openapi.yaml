@@ -283,8 +283,7 @@ components:
         Candidate:
             title: Root Type for Candidate
             description: |-
-                This is a definition for candidate in system
-                It's contain different data betwen candidate and user as a candidate is a user first
+                This is a definition for candidate in system It's contain different data betwen candidate and user as a candidate is a user first
             required:
                 - slogan
                 - vote_count
