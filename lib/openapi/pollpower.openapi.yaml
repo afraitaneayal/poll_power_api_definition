@@ -69,9 +69,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                type: array
-                                items:
-                                    $ref: '#/components/schemas/Candidate'
+                                $ref: '#/components/schemas/CandidateResponse'
                     description: Successfuly got candidates
                 '400':
                     content:
