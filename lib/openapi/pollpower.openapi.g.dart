@@ -160,7 +160,7 @@ Map<String, dynamic> _$APIErrorToJson(APIError instance) {
 
 CandidateResponse _$CandidateResponseFromJson(Map<String, dynamic> json) =>
     CandidateResponse(
-      candidate: (json['candidate'] as List<dynamic>?)
+      candidates: (json['candidates'] as List<dynamic>?)
           ?.map((e) => Candidate.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
@@ -174,6 +174,6 @@ Map<String, dynamic> _$CandidateResponseToJson(CandidateResponse instance) {
     }
   }
 
-  writeNotNull('candidate', instance.candidate);
+  writeNotNull('candidates', instance.candidates);
   return val;
 }

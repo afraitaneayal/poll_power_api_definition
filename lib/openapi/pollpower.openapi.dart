@@ -72,7 +72,7 @@ class User implements OpenApiContent {
   String toString() => toJson().toString();
 }
 
-/// This is a definition for candidate in system It's contain different data betwen candidate and user as a candidate is a user first
+/// Candidate definition
 @JsonSerializable()
 @ApiUuidJsonConverter()
 class Candidate implements OpenApiContent {
@@ -293,17 +293,17 @@ class APIError implements OpenApiContent {
 @JsonSerializable()
 @ApiUuidJsonConverter()
 class CandidateResponse implements OpenApiContent {
-  CandidateResponse({this.candidate});
+  CandidateResponse({this.candidates});
 
   factory CandidateResponse.fromJson(Map<String, dynamic> jsonMap) =>
       _$CandidateResponseFromJson(jsonMap);
 
   ///
   @JsonKey(
-    name: 'candidate',
+    name: 'candidates',
     includeIfNull: false,
   )
-  final List<Candidate>? candidate;
+  final List<Candidate>? candidates;
 
   Map<String, dynamic> toJson() => _$CandidateResponseToJson(this);
 
@@ -1390,7 +1390,7 @@ abstract class Pollpower implements ApiEndpoint {
   /// Post method to create new candidate
   /// Post method to create new user and return their access
   /// post: /v1/auth/signup/candidate
-  /// [body]: This is a definition for candidate in system It's contain different data betwen candidate and user as a candidate is a user first
+  /// [body]: Candidate definition
   Future<SignUpCandidateResponse> signUpCandidate(Candidate body);
 
   /// get: /v1/users
@@ -1444,7 +1444,7 @@ abstract class PollpowerClient implements OpenApiClient {
   /// Post method to create new user and return their access
   /// post: /v1/auth/signup/candidate
   ///
-  /// [body]: This is a definition for candidate in system It's contain different data betwen candidate and user as a candidate is a user first
+  /// [body]: Candidate definition
   Future<SignUpCandidateResponse> signUpCandidate(Candidate body);
 
   /// get: /v1/users
@@ -1680,7 +1680,7 @@ class _PollpowerClientImpl extends OpenApiClientBase
   /// Post method to create new user and return their access
   /// post: /v1/auth/signup/candidate
   ///
-  /// [body]: This is a definition for candidate in system It's contain different data betwen candidate and user as a candidate is a user first
+  /// [body]: Candidate definition
   @override
   Future<SignUpCandidateResponse> signUpCandidate(Candidate body) async {
     final request = OpenApiClientRequest(
