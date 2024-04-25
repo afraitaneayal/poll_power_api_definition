@@ -81,6 +81,7 @@ class Candidate implements OpenApiContent {
     this.speech,
     required this.voteCount,
     required this.user,
+    this.uuid,
   });
 
   factory Candidate.fromJson(Map<String, dynamic> jsonMap) =>
@@ -111,6 +112,13 @@ class Candidate implements OpenApiContent {
     includeIfNull: false,
   )
   final User user;
+
+  ///
+  @JsonKey(
+    name: 'uuid',
+    includeIfNull: false,
+  )
+  final String? uuid;
 
   Map<String, dynamic> toJson() => _$CandidateToJson(this);
 

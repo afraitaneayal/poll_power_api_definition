@@ -41,6 +41,7 @@ Candidate _$CandidateFromJson(Map<String, dynamic> json) => Candidate(
       speech: json['speech'] as String?,
       voteCount: json['vote_count'] as int,
       user: User.fromJson(json['user'] as Map<String, dynamic>),
+      uuid: json['uuid'] as String?,
     );
 
 Map<String, dynamic> _$CandidateToJson(Candidate instance) {
@@ -57,6 +58,7 @@ Map<String, dynamic> _$CandidateToJson(Candidate instance) {
   writeNotNull('speech', instance.speech);
   val['vote_count'] = instance.voteCount;
   val['user'] = instance.user;
+  writeNotNull('uuid', instance.uuid);
   return val;
 }
 
