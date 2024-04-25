@@ -207,10 +207,10 @@ class JWTresponse implements OpenApiContent {
 @ApiUuidJsonConverter()
 class VotingRequest implements OpenApiContent {
   VotingRequest({
-    this.candidateId,
+    required this.candidateId,
     this.votedAt,
-    this.userId,
-    required this.uuid,
+    required this.userId,
+    this.uuid,
   });
 
   factory VotingRequest.fromJson(Map<String, dynamic> jsonMap) =>
@@ -220,7 +220,7 @@ class VotingRequest implements OpenApiContent {
     name: 'candidate_id',
     includeIfNull: false,
   )
-  final String? candidateId;
+  final String candidateId;
 
   @JsonKey(
     name: 'voted_at',
@@ -232,14 +232,14 @@ class VotingRequest implements OpenApiContent {
     name: 'user_id',
     includeIfNull: false,
   )
-  final String? userId;
+  final String userId;
 
   ///
   @JsonKey(
     name: 'uuid',
     includeIfNull: false,
   )
-  final String uuid;
+  final String? uuid;
 
   Map<String, dynamic> toJson() => _$VotingRequestToJson(this);
 

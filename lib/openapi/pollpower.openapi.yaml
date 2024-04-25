@@ -341,7 +341,8 @@ components:
             title: Root Type for VotingRequest
             description: ''
             required:
-                - uuid
+                - candidate_id
+                - user_id
             type: object
             properties:
                 candidate_id:
