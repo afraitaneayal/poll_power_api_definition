@@ -342,7 +342,6 @@ components:
             description: ''
             required:
                 - candidate_id
-                - user_id
             type: object
             properties:
                 candidate_id:

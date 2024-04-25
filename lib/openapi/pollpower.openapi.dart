@@ -209,7 +209,7 @@ class VotingRequest implements OpenApiContent {
   VotingRequest({
     required this.candidateId,
     this.votedAt,
-    required this.userId,
+    this.userId,
     this.uuid,
   });
 
@@ -232,7 +232,7 @@ class VotingRequest implements OpenApiContent {
     name: 'user_id',
     includeIfNull: false,
   )
-  final String userId;
+  final String? userId;
 
   ///
   @JsonKey(

@@ -101,7 +101,7 @@ VotingRequest _$VotingRequestFromJson(Map<String, dynamic> json) =>
     VotingRequest(
       candidateId: json['candidate_id'] as String,
       votedAt: json['voted_at'] as String?,
-      userId: json['user_id'] as String,
+      userId: json['user_id'] as String?,
       uuid: json['uuid'] as String?,
     );
 
@@ -117,7 +117,7 @@ Map<String, dynamic> _$VotingRequestToJson(VotingRequest instance) {
   }
 
   writeNotNull('voted_at', instance.votedAt);
-  val['user_id'] = instance.userId;
+  writeNotNull('user_id', instance.userId);
   writeNotNull('uuid', instance.uuid);
   return val;
 }
