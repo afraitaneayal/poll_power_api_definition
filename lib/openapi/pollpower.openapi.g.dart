@@ -6,6 +6,7 @@ part of 'pollpower.openapi.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+ // I assume this is for sign in 
 User _$UserFromJson(Map<String, dynamic> json) => User(
       email: json['email'] as String,
       password: json['password'] as String,
