@@ -15,4 +15,4 @@ for candidates it is possible to write a resume of the resaons he should be elec
 He can also provide a picture he want voters to see
 
 for voters it is possible to look through candidates and their programms
-they can choose to vote for the candidate they want to
+they can choose to vote for the candidate they want 
