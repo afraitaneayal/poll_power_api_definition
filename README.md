@@ -8,3 +8,4 @@ Goal is to create a voting app
 apps works with candidates and voters
 first we dedicate part for candidate to register
 then we close registration for candidates
+second we open registration for voter and launch the voting timer
