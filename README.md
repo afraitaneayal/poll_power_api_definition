@@ -12,5 +12,6 @@ second we open registration for voter and launch the voting timer
 after times up, vote result are displayed for every one to see
 
 for candidates it is possible to write a resume of the resaons he should be elected
+He can also provide a picture he want voters to see
 
 for voters it is possible to look through candidates and their programms
