@@ -16,4 +16,3 @@ He can also provide a picture he want voters to see
 
 for voters it is possible to look through candidates and their programms
 they can choose to vote for the candidate they want to
-Once they 
