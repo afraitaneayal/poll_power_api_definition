@@ -10,3 +10,5 @@ first we dedicate part for candidate to register
 then we close registration for candidates
 second we open registration for voter and launch the voting timer
 after times up, vote result are displayed for every one to see
+
+for voters it is possible to look through candidates and their programms
